@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import {papers,categories} from '../data/papers';
+const descriptions:Record<string,string> = {
+  Coordination:'Multi-agent systems, delegation, communication protocols, and the limits of parallel collaboration.',
+  Evaluation:'Benchmarks, experimental controls, measurement confounds, and what success scores really mean.',
+  Verification:'Evidence, tests, artifact provenance, and independent checks on agent claims.',
+  Reliability:'Long-horizon errors, compounding defects, recovery strategies, and robustness.',
+  Safety:'Boundaries, tool permissions, environment-based audits, and safer autonomy.',
+  Engineering:'Interfaces, contracts, code generation, and the craft of building dependable systems.'
+};
+---
+<Base title="Research topics" description="Explore agentic AI research by concept, from coordination and verification to agent safety and evaluation.">
+  <div class="shell simple-page">
+    <div class="kicker">THE KNOWLEDGE MAP</div>
+    <h1>Follow a question.<br/><span style="color:var(--accent)">Find a new one.</span></h1>
+    <p class="intro">The most interesting research rarely stays inside one discipline. These topics are starting points for tracing connections between architectures, experiments, and evidence.</p>
+    <div class="topic-list">
+      {categories.map(c=><a class="topic-box" href={'/?topic='+encodeURIComponent(c)+'#latest'}>
+        <span class="count">{String(papers.filter(p=>p.category===c).length).padStart(2,'0')} READINGS</span>
+        <h2>{c} ↗</h2>
+        <p>{descriptions[c]||'Related research and emerging technical ideas.'}</p>
+      </a>)}
+    </div>
+  </div>
+</Base>

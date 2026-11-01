@@ -1,0 +1,153 @@
+---
+import Base from '../layouts/Base.astro';
+import PaperCard from '../components/PaperCard.astro';
+import { latestPapers, categories, formatDate } from '../data/papers';
+const featured = latestPapers[0];
+const counts = new Set(latestPapers.map(p => p.category)).size;
+const shownFilters = ['All', 'Coordination', 'Evaluation', 'Verification', 'Reliability', 'Safety'];
+---
+<Base>
+  <section class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <div class="kicker">THE FIELD NOTES OF AGENTIC INTELLIGENCE</div>
+        <h1>Curiosity,<br/>with <em>direction.</em></h1>
+        <p class="hero-sub">Research moves fast. Understanding takes time. We unpack the mechanisms, evidence, and open questions behind agentic AI—one consequential idea at a time.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#latest">Explore the research <span>↗</span></a>
+          <a class="btn btn-secondary" href="/about">How we read papers <span>→</span></a>
+        </div>
+        <div class="hero-meta"><span class="meta-line"></span> OPEN SOURCE JOURNAL <span style="opacity:.5">/</span> EST. 2026</div>
+      </div>
+      <div class="hero-graphic" role="img" aria-label="Diagram of multiple research paths converging into one synthesized insight">
+        <div class="graphic-grid"></div>
+        <div class="graphic-label one">FIG 01. / CONVERGENCE</div>
+        <div class="graphic-center">
+          <svg viewBox="0 0 470 390" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <circle cx="235" cy="195" r="134" stroke="var(--line)" stroke-dasharray="3 8"/>
+            <circle cx="235" cy="195" r="98" stroke="var(--line)" stroke-width="1"/>
+            <circle cx="235" cy="195" r="55" fill="var(--wash)" stroke="var(--accent)" stroke-width="1"/>
+            <path d="M99 88 Q144 97 182 151 L235 195" stroke="#a38cf7" stroke-width="2.5"/>
+            <path d="M365 87 Q312 91 286 151 L235 195" stroke="#8bb9d6" stroke-width="2.5"/>
+            <path d="M105 300 Q144 283 183 242 L235 195" stroke="#a2c9bc" stroke-width="2.5"/>
+            <path d="M359 300 Q313 282 285 242 L235 195" stroke="#cbbba2" stroke-width="2.5"/>
+            <path d="M235 195 L235 319" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 6"/>
+            <circle cx="99" cy="88" r="14" fill="var(--card)" stroke="#a38cf7" stroke-width="2"/>
+            <circle cx="365" cy="87" r="14" fill="var(--card)" stroke="#8bb9d6" stroke-width="2"/>
+            <circle cx="105" cy="300" r="14" fill="var(--card)" stroke="#a2c9bc" stroke-width="2"/>
+            <circle cx="359" cy="300" r="14" fill="var(--card)" stroke="#cbbba2" stroke-width="2"/>
+            <circle cx="235" cy="195" r="33" fill="var(--ink)"/>
+            <path d="M217 203 230 182h11l13 21h-9l-9-14-9 14h-10Z" fill="var(--bg)"/>
+            <circle cx="235" cy="319" r="8" fill="var(--accent)"/>
+            <text x="69" y="59" fill="var(--muted)" font-size="10" font-family="sans-serif">IDEA 01</text>
+            <text x="341" y="59" fill="var(--muted)" font-size="10" font-family="sans-serif">IDEA 02</text>
+            <text x="70" y="335" fill="var(--muted)" font-size="10" font-family="sans-serif">IDEA 03</text>
+            <text x="332" y="334" fill="var(--muted)" font-size="10" font-family="sans-serif">IDEA 04</text>
+            <text x="252" y="342" fill="var(--muted)" font-size="10" font-family="sans-serif">SYNTHESIS</text>
+          </svg>
+        </div>
+        <div class="graphic-label two">EXPLORATION → UNDERSTANDING</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section featured-section">
+    <div class="shell">
+      <div class="section-head">
+        <div><div class="kicker">THE EDITOR'S DESK / LATEST</div><h2>Worth thinking about.</h2></div>
+        <p>One finding, examined closely. The goal is not to collect papers, but to understand what they actually demonstrate.</p>
+      </div>
+      <div class="featured-card">
+        <div class="featured-content">
+          <div class="eyebrow">FEATURED READING · {formatDate(featured.publishedOn)}</div>
+          <h3>{featured.title}</h3>
+          <p>{featured.subtitle} Explore what the experiments reveal—and what they still don't.</p>
+          <a class="featured-link" href={'/research/' + featured.slug}>Read the analysis <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="featured-art" aria-hidden="true">
+          <svg viewBox="0 0 420 375" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="196" cy="189" r="122" stroke="#4c4d73"/>
+            <circle cx="196" cy="189" r="82" stroke="#5c5b86" stroke-dasharray="3 8"/>
+            <circle cx="196" cy="189" r="48" fill="#242b46" stroke="#8678c9"/>
+            <path d="M74 185 148 185M245 185 336 185" stroke="#9b8af0" stroke-width="2"/>
+            <path d="M196 67 196 141M196 237 196 312" stroke="#9b8af0" stroke-width="2"/>
+            <circle cx="74" cy="185" r="13" fill="#b8a8ff"/><circle cx="336" cy="185" r="13" fill="#b8a8ff"/>
+            <circle cx="196" cy="67" r="13" fill="#7ab9d8"/><circle cx="196" cy="312" r="13" fill="#81c9b7"/>
+            <circle cx="196" cy="185" r="18" fill="#eeeaff"/>
+            <path d="M185 192 196 175 207 192" stroke="#7765c6" stroke-width="4" stroke-linecap="round"/>
+            <path d="m306 90 38-37m-10 0h10v10" stroke="#6b739d" stroke-width="1.5"/>
+          </svg>
+          <div class="featured-art-label">01 / COORDINATION UNDER EXAMINATION</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="shell">
+    <div class="summary-strip">
+      <div class="summary-item"><strong>{latestPapers.length.toString().padStart(2,'0')}</strong><span>Research readings</span></div>
+      <div class="summary-item"><strong>{counts.toString().padStart(2,'0')}</strong><span>Fields explored</span></div>
+      <div class="summary-item"><strong>100%</strong><span>Primary-source linked</span></div>
+    </div>
+  </div>
+
+  <section class="section" id="latest">
+    <div class="shell">
+      <div class="section-head">
+        <div><div class="kicker">THE RESEARCH LIBRARY</div><h2>Discover the evidence.</h2></div>
+        <p>Readings selected for their educational value, technical insight, and opportunities for critical thinking.</p>
+      </div>
+      <div class="finding-toolbar">
+        <div class="filters" role="group" aria-label="Filter research by topic">
+          {shownFilters.map(cat => <button class:list={['filter',{active:cat==='All'}]} type="button" data-filter={cat} aria-pressed={cat==='All'}>{cat}</button>)}
+        </div>
+        <label class="searchbox" aria-label="Search research">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.5"/></svg>
+          <input type="search" id="paper-search" placeholder="Search notes..." autocomplete="off"/>
+        </label>
+      </div>
+      <p class="results-line" aria-live="polite" id="results-count">{latestPapers.length} READINGS AVAILABLE / NEWEST FIRST</p>
+      <div class="papers-grid" id="paper-list">
+        {latestPapers.map((paper,index) => <PaperCard paper={paper} index={index}/>)}
+      </div>
+      <div class="empty-state" id="empty-state">Nothing matches that search. Try another term or topic.</div>
+    </div>
+  </section>
+  <div class="shell">
+    <aside class="open-callout">
+      <div><div class="kicker">OPEN QUESTIONS, OPEN SOURCE</div><h2>Help make the research clearer.</h2><p>Suggest a paper, challenge a claim, fix an error, or help explain a difficult mechanism. Every good question improves the library.</p></div>
+      <a href="https://github.com/Omair-Asdaq/agenthesis/issues/new" target="_blank" rel="noopener noreferrer">Contribute on GitHub ↗</a>
+    </aside>
+  </div>
+  <script is:inline>
+    (function(){
+      var input=document.getElementById('paper-search');
+      var cards=[].slice.call(document.querySelectorAll('[data-research-card]'));
+      var buttons=[].slice.call(document.querySelectorAll('[data-filter]'));
+      var count=document.getElementById('results-count');
+      var empty=document.getElementById('empty-state');
+      var selected='All';
+      function apply(){
+        var query=(input&&input.value||'').trim().toLowerCase();
+        var visible=0;
+        cards.forEach(function(card){
+          var ok=(selected==='All'||card.dataset.category===selected)&&(card.dataset.search||'').includes(query);
+          card.style.display=ok?'':'none';if(ok)visible++;
+        });
+        if(count)count.textContent=visible+' READINGS FOUND / NEWEST FIRST';
+        if(empty)empty.classList.toggle('show',visible===0);
+      }
+      buttons.forEach(function(b){b.addEventListener('click',function(){
+        selected=b.dataset.filter||'All';
+        buttons.forEach(function(other){var active=other===b;other.classList.toggle('active',active);other.setAttribute('aria-pressed',String(active))});
+        apply();
+      })});
+      if(input)input.addEventListener('input',apply);
+      var p=new URLSearchParams(window.location.search);
+      var t=p.get('topic');
+      if(t){var target=buttons.find(function(b){return b.dataset.filter===t});
+        if(target)target.click();else if(input){input.value=t;apply();}
+        var element=document.getElementById('latest');if(element)element.scrollIntoView();
+      }
+    })();
+  </script>
+</Base>

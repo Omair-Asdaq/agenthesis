@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import { papers, formatDate, type ResearchPaper } from '../../data/papers';
+export function getStaticPaths(){
+  return papers.map(paper => ({params:{slug:paper.slug},props:{paper}}));
+}
+const {paper} = Astro.props as {paper:ResearchPaper};
+---
+<Base title={paper.title} description={paper.subtitle}>
+  <header class="article-header">
+    <div class="shell">
+      <div class="article-narrow">
+        <a href="/#latest" class="article-breadcrumb">← BACK TO THE RESEARCH LIBRARY</a>
+        <div class="kicker" style="margin-top:38px">FIELD NOTE / {paper.category.toUpperCase()}</div>
+        <h1>{paper.title}</h1>
+        <p class="article-deck">{paper.subtitle}</p>
+        <div class="article-detail">
+          <span class="pill">{paper.level}</span>
+          <span>{formatDate(paper.publishedOn)}</span>
+          <span>·</span>
+          <span>{paper.readMinutes} min read</span>
+          <span>·</span>
+          <span>Paper published {formatDate(paper.paperDate)}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+  <article class="article-body">
+    <div class="shell">
+      <div class="article-narrow">
+        <div class="section-mini">THE QUESTION</div>
+        <div class="quote-panel"><p>{paper.question}</p></div>
+        <h2>First, the intuition.</h2>
+        <p>{paper.intuition}</p>
+        <h2>What the researchers actually did</h2>
+        <p>{paper.mechanism}</p>
+        <h2>What the results suggest</h2>
+        <ul>{paper.reportedResults.map(f => <li>{f}</li>)}</ul>
+        <h2>How convincing is the evidence?</h2>
+        <p>{paper.evidence}</p>
+        <h2>What remains uncertain?</h2>
+        <p>{paper.limitations}</p>
+        <h2>Connections worth exploring</h2>
+        <ul>{paper.connections.map(c => <li>{c}</li>)}</ul>
+        <div class="section-mini" style="margin-top:48px">THE TAKEAWAY</div>
+        <div class="quote-panel"><p>{paper.verdict}</p></div>
+        <div class="article-source">
+          <div><small>PRIMARY RESEARCH</small><p>{paper.authors} · {formatDate(paper.paperDate)}<br/>Our analysis is not an independent replication.</p></div>
+          <a href={paper.source} target="_blank" rel="noopener noreferrer">Read original ↗</a>
+        </div>
+        <div class="article-bottom"><a href="/#latest">← All research</a><a href="/topics">Browse by topic ↗</a></div>
+      </div>
+    </div>
+  </article>
+</Base>

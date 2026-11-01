@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+const standards=[
+  ['Follow the question','Start with a concrete problem, and explain the intuition before assuming readers know the terminology.'],
+  ['Read the experiment','Describe what was actually held constant: model, harness, tasks, budget, compute, metrics, and test conditions.'],
+  ['Separate fact from interpretation','Distinguish author-reported findings from our analysis, and give limitations room to change the conclusion.'],
+  ['Link the source','Every research note links directly to the primary paper, so readers can inspect the claims themselves.'],
+  ['Learn across boundaries','Prioritize agentic AI. Include broader AI and computer science only where the ideas offer unusual insight.'],
+  ['Correct openly','Research understanding evolves. Corrections and counterevidence belong in public version history, not behind closed doors.']
+];
+---
+<Base title="About the journal" description="AGENTHESIS is an open-source field journal for learning agentic AI without hype.">
+  <div class="shell simple-page">
+    <div class="kicker">WHY THIS JOURNAL EXISTS</div>
+    <h1>Less noise.<br/><span style="color:var(--accent)">Better questions.</span></h1>
+    <p class="intro">Agentic AI is advancing faster than anyone can read. AGENTHESIS is an independent, open-source learning journal for those who want to understand how research works, which claims hold up, and where ideas connect—not merely collect headlines.</p>
+    <div class="method-list">
+      {standards.map(([title,body],i)=><div class="method"><span class="number">{String(i+1).padStart(2,'0')} / OUR METHOD</span><h2>{title}</h2><p>{body}</p></div>)}
+    </div>
+    <div class="open-callout" style="margin-top:65px">
+      <div><div class="kicker">OPEN BY DESIGN</div><h2>Every idea can be challenged.</h2><p>Research findings here are educational syntheses, not peer review or independent replication. Suggest a correction, discuss a paper, or contribute a new reading through the public repository.</p></div>
+      <a href="https://github.com/Omair-Asdaq/agenthesis" target="_blank" rel="noopener noreferrer">View source ↗</a>
+    </div>
+  </div>
+</Base>

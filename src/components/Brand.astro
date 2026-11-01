@@ -1,0 +1,20 @@
+---
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
+---
+<a class:list={['brand', {compact}]} href="/" aria-label="AGENTHESIS home">
+  <svg class="brand-mark" aria-hidden="true" viewBox="0 0 64 64" fill="none">
+    <path d="M9 53 25 10h14l16 43H44L32 19 20 53H9Z" fill="currentColor"/>
+    <path d="M20 47c3.2-9.2 9.8-11.4 12-19 2.2 7.6 8.8 9.8 12 19" stroke="var(--brand-ink, #9380ef)" stroke-width="4.7" stroke-linecap="round"/>
+    <circle cx="32" cy="27" r="3.4" fill="var(--brand-ink, #9380ef)"/>
+  </svg>
+  <span class="brand-word">AGENTHESIS<span class="brand-dot">.</span></span>
+</a>
+<style>
+.brand {display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--ink);white-space:nowrap}
+.brand-mark{width:31px;height:31px;flex:none}
+.brand-word{font-size:1.04rem;letter-spacing:-.055em;font-weight:850}
+.brand-dot{color:var(--accent);font-size:1.35em}
+.brand.compact .brand-mark{width:25px;height:25px}
+.brand.compact .brand-word{font-size:.9rem}
+</style>

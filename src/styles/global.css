@@ -129,3 +129,15 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(-
 @media(max-width:950px){.hero-grid{grid-template-columns:1fr}.hero-graphic{max-width:600px;width:100%;height:325px}.papers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.featured-card{grid-template-columns:1fr .6fr}.featured-content{padding:35px}.featured-card h3{font-size:2.5rem}.footer-upper{align-items:start}.hero{padding-top:65px}}
 @media(max-width:650px){.shell{padding:0 20px}.topline-right{display:none}.header-inside{gap:13px;min-height:70px}.header-inside nav{gap:17px}.nav-link{font-size:.73rem}.desktop-only{display:none!important}.brand-word{font-size:.91rem!important}.brand-mark{width:26px!important;height:26px!important}.theme-toggle{width:34px;height:34px}.hero{padding:55px 0 50px}.hero h1{font-size:3.5rem;letter-spacing:-.075em}.hero-graphic{height:300px}.hero-meta{font-size:9px}.section{padding:50px 0}.section-head{display:block}.section-head p{margin-top:16px}.featured-card{grid-template-columns:1fr}.featured-art{min-height:190px}.featured-art svg{max-height:190px}.featured-card h3{font-size:2.45rem}.featured-content{padding:32px 26px}.summary-item{padding:17px 12px;gap:8px;flex-direction:column;align-items:start}.summary-item strong{font-size:1.5rem}.summary-item span{font-size:.58rem}.finding-toolbar{display:block}.filters{margin-bottom:15px}.searchbox{width:100%}.papers-grid{grid-template-columns:1fr}.paper-card{min-height:300px}.open-callout{display:block;padding:28px;margin:20px 0 65px}.open-callout a{display:inline-block;margin-top:23px}.footer-upper,.footer-lower{display:block}.footer-links{margin-top:30px;gap:18px}.footer-lower span{display:block;margin-bottom:13px}.article-header{padding-top:53px}.article-header h1{font-size:3rem}.article-body{padding-top:35px}.article-source{display:block}.article-source a{display:inline-block;margin-top:18px}.simple-page{padding:55px 0}.topic-list,.method-list{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+@media(max-width:470px){
+  .header-inside{gap:8px}
+  .header-inside nav{gap:12px}
+  .header-inside nav .nav-link:nth-child(3){display:none}
+  .brand-word{font-size:.8rem!important}
+  .hero h1{font-size:clamp(2.85rem,13vw,3.5rem)}
+  .hero-actions{gap:10px}
+  .hero .btn-primary{padding:14px 15px}
+  .hero .btn-secondary{font-size:.78rem}
+  .graphic-label.two{font-size:8px}
+}

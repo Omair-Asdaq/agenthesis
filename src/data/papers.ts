@@ -244,7 +244,7 @@ export const papers: ResearchPaper[] = [
     limitations: 'The benchmark subset and tested models limit external validity. Resource budgets are not established as fully matched across all comparison axes.',
     connections: ['Git commits can serve as a shared action space.', 'Explicit peer awareness reduces coordination ambiguity.', 'More agents can increase conflicts unless the shared state and ownership rules scale with them.'],
     verdict: 'Collaboration needs shared evidence, not just parallel workers.'
-  }
+  },
   {
     slug: 'agents-under-concurrent-workloads',
     title: 'When coding agents become workload schedulers',

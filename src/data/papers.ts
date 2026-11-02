@@ -245,6 +245,52 @@ export const papers: ResearchPaper[] = [
     connections: ['Git commits can serve as a shared action space.', 'Explicit peer awareness reduces coordination ambiguity.', 'More agents can increase conflicts unless the shared state and ownership rules scale with them.'],
     verdict: 'Collaboration needs shared evidence, not just parallel workers.'
   }
+  {
+    slug: 'agents-under-concurrent-workloads',
+    title: 'When coding agents become workload schedulers',
+    subtitle: 'High isolated accuracy does not guarantee reliable delivery of concurrent tasks.',
+    category: 'Coordination',
+    tags: ['Coding agents', 'Scheduling', 'Tool use', 'Evaluation'],
+    publishedOn: '2026-11-02', paperDate: '2026-10-23',
+    authors: 'Erle Zhu, Genrui Zhang, Keyang Hu, Mingyu Su and Hongning Wang',
+    source: 'https://arxiv.org/abs/2610.33178v2',
+    readMinutes: 9, level: 'Advanced', accent: 'blue',
+    question: 'If a coding agent solves individual tasks, can it also manage a changing queue of jobs on one resource-limited machine?',
+    intuition: 'Task-solving ability and workload scheduling are different. A smart agent can stay busy on one job while later requests wait unclaimed. A bounded worker pool can be more effective than repeated managerial reasoning because it makes progress on several independent jobs without excessive coordination.',
+    mechanism: 'AOS-Bench releases verified tasks over time through a dispatcher. Five model–harness systems claim and execute jobs with access to tools and optional subagents within a shared four-CPU, eight-GiB workspace. Medium workloads contain ten tasks; heavy workloads contain twenty. The same tasks are also evaluated individually. External verifiers score final artifacts rather than accepting agent-reported completion. The paper intervenes on dispatch policies, including serial execution and a fixed concurrency of two.',
+    reportedResults: [
+      'On medium workloads, GLM-5.3 with Claude Code scored 74.9% in isolation but 53.9% in streams; Kimi-K3 with Kimi Code scored 74.3% and 68.1% respectively. These are distinct model–harness pairs.',
+      'All five tested systems lost between 13.0 and 22.7 percentage points of task success on heavy workloads relative to their own isolated results.',
+      'Serial dispatch left 73% of heavy-workload tasks unclaimed. A fixed concurrency of two came within four percentage points of the best agent-managed policy on medium and heavy workloads.'
+    ],
+    evidence: 'The authors match task identities across isolated and stream settings, run external artifact verifiers, inspect task-state traces and report timing and resource telemetry. This makes unclaimed work distinguishable from incorrect work. However, isolated runs allocate exclusive resources per task while streams share one machine: they are a capability reference, not a cost-matched control. Reported outcomes are from the authors; no independent replication is claimed here.',
+    limitations: 'Cross-system comparisons change both model and harness. Eleven problematic tasks were excluded and one medium configuration completed 27 rather than 30 trials. Confidence intervals use relatively few workload clusters. Equal token, tool-call and wall-clock budgets are not established for every comparison, so the results do not prove that sophisticated planning can never help. First posted October 23, revised October 27, 2026; no separate journal publication is indicated. Reproduction resources: https://github.com/AOS-Bench/AOS-Bench.',
+    connections: ['This resembles operating-system scheduling and queueing: intake bottlenecks waste available capacity.', 'Use a simple bounded worker pool as the baseline when evaluating agent orchestration.', 'Track verified throughput, unclaimed tasks and cost per delivered job, not just standalone task accuracy.'],
+    verdict: 'A scheduling baseline should earn its complexity: fixed concurrency is surprisingly difficult to beat.'
+  },
+  {
+    slug: 'precrime-agent-disclosure-monitoring',
+    title: 'Can a monitor detect an agent leak before it happens?',
+    subtitle: 'Activation probes forecast disclosure, but prediction is not policy enforcement.',
+    category: 'Safety',
+    tags: ['Agent safety', 'Monitoring', 'Interpretability', 'Multi-agent'],
+    publishedOn: '2026-11-02', paperDate: '2026-10-29',
+    authors: 'Leonidas Raghav',
+    source: 'https://arxiv.org/abs/2610.40588v1',
+    readMinutes: 9, level: 'Advanced', accent: 'peach',
+    question: 'Can a defender anticipate the call where another agent gives in to repeated pressure and reveals a protected secret?',
+    intuition: 'A filter that scans an already generated message may be too late to prevent a peer from acting on it. Hidden model activations might signal an imminent disclosure before text appears. But a model preparing to disclose information is not necessarily breaking a rule: disclosure can be authorized.',
+    mechanism: 'The paper studies six controlled multi-agent situations. A peer pressures a target for up to twenty rounds to reveal a secret. A trained linear probe reads internal activations at the model-call boundary, before the target writes its response, and predicts the leaking call. Held-out Qwen3-32B experiments compare it against zero-shot decision-model monitoring and a supervised bag-of-words text classifier; a gpt-oss-20b variant probes reasoning activations.',
+    reportedResults: [
+      'On held-out Qwen3-32B episodes, the probe detects 82% of leaking calls when tuned to flag 5% of benign calls. A zero-shot decision-model monitor detects 26% at a similar false-alarm rate.',
+      'For gpt-oss-20b, the reported reasoning probe reaches an AUROC of 0.91.',
+      'A supervised bag-of-words classifier approaches the probe, suggesting that labeled training data accounts for much of the improvement over the zero-shot monitor.'
+    ],
+    evidence: 'The experimental unit is a model call inside a repeated recruitment episode, and the authors explicitly compare supervised text monitoring with hidden-state access. This distinguishes detection performance from the assumption that activations alone explain the gains. The source links a code artifact; results are author-reported, not independently reproduced here.',
+    limitations: 'The probe also flags permitted disclosures, so it does not reliably infer authorization or operator policy. A 5% per-call benign-alarm rate compounds over multi-turn sessions: stopping on any alert can interrupt most benign episodes. Results are from controlled secret-sharing settings, not broad deployment trials. Tool exposure and compute costs of monitoring are not fully matched across architectures; access to model activations may be unavailable in hosted systems. First posted October 29, 2026, with no separate journal publication indicated.',
+    connections: ['Predicting what a model will do differs from deciding whether that action is allowed.', 'Report session-level false intervention rates for long-running agents, not only call-level AUROC.', 'Keep secrets outside agent context where possible and use least-privilege tool credentials even with a monitor.'],
+    verdict: 'Pre-output monitoring may be useful defense in depth, but it is not a substitute for hard permission boundaries.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

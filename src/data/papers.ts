@@ -314,6 +314,75 @@ export const papers: ResearchPaper[] = [
     connections: ['This resembles incremental build systems and data lineage: recompute invalid downstream dependencies while retaining valid upstream artifacts.', 'A verifier should track unmet acceptance criteria separately from exceptions or successful tool-return status.', 'For agentic software engineering, compare local retry, rollback and graph repair under identical resource ceilings, and audit whether supposedly reusable outputs remain valid.'],
     verdict: 'Track required contributions and their evidence, then recover the smallest invalid dependency region rather than blindly replaying the workflow.'
   },
+  {
+    slug: 'blackswan-refutation-before-tool-actions',
+    title: 'Try to disprove an action before executing it.',
+    subtitle: 'BlackSwan turns pre-action verification into an expect–suspect–test loop.',
+    category: 'Verification',
+    tags: ['Tool use', 'Planning', 'Verification', 'Agent safety'],
+    publishedOn: '2026-11-03', paperDate: '2026-11-02',
+    authors: 'Minhyeon Oh, Chiyeong Heo, Geonwoo Noh, Hoyoung Kim, Jangwon Son and Jungseul Ok',
+    source: 'https://arxiv.org/abs/2611.02950v1',
+    readMinutes: 10, level: 'Advanced', accent: 'mint',
+    question: 'Before a state-changing tool call, should an agent collect evidence that the call is justified—or actively try to find evidence that it is wrong?',
+    intuition: 'Confirmation can be easy even for a mistaken plan: one reassuring signal does not rule out incompatible assumptions. A stronger strategy formulates specific falsifiers, reads the environment without changing it, and blocks or redrafts actions whose assumptions fail.',
+    mechanism: 'BlackSwan wraps candidate state-mutating actions in Expect–Suspect–Test. Expect states the anticipated local effect; Suspect proposes up to five concrete ways the action could fail or be misaligned; Test looks for contradictory evidence using existing observations or up to 50 read-only probes. Surviving contradictions force a redraft before the write occurs. On AppWorld, baseline agents use the same code-action environment, and the paper contrasts refutation with a confirmation-oriented verifier.',
+    reportedResults: [
+      'On AppWorld challenge tasks with thinking enabled, BlackSwan reached 84.7 task-goal completion and 72.4 scenario-goal completion, 14.9 and 19.2 percentage points above the strongest respective baseline. The authors report a 25.2-point task-goal advantage without thinking.',
+      'On WebShop test-500, success was 50.8% versus 38.1% for ReAct and 42.0% for Harness-R1. On near-saturated ALFWorld unseen tasks, BlackSwan reached 99.5%, versus 98.8% ReAct.',
+      'For several matched backbones, the authors report 1.39–2.25 times as many completed tasks as ReAct at 1.5–9.4 times the inference cost; the results are not equal-token or equal-dollar comparisons.'
+    ],
+    evidence: 'The authors evaluate four backbones, normal and challenging AppWorld splits, cross-environment transfer, and an ablation separating confirmation versus refutation and explicit versus implicit suspicions. ReAct is the unguarded reference; ACE uses learned playbooks; the authors reimplemented Accord because its implementation was not available. The appendix provides prompts, procedure and cost measurement, supporting partial reproducibility. These are author-reported results, not independent replication.',
+    limitations: 'Extra read-only tool calls can add substantial token, latency and tool cost; the top-line accuracy advantage is not an equal-budget advantage. The Accord baseline is a paper-based reimplementation and may differ from its original implementation. Read-only probes cannot resolve contradictory or underspecified user intentions; repeated suspicions can lead to loops. Tool semantics such as whether a call really is non-mutating must be trusted. Original arXiv submission November 2, 2026; no separate journal publication is indicated.',
+    connections: ['This is falsification applied to tool execution: search for a counterexample rather than more confirming examples.', 'Use preflight checks for irreversible PR, deployment and payment operations before allowing the action.', 'Measure avoided harmful writes and success per dollar, not simply additional reasoning steps.'],
+    verdict: 'Refutation-oriented preflight checking is promising, provided its extra calls and ambiguity handling are measured.'
+  },
+  {
+    slug: 'predictive-guardrails-action-gap',
+    title: 'More safety prediction does not mean safer agents.',
+    subtitle: 'A diagnostic study separates forecasting, risk recognition and actual policy-following.',
+    category: 'Safety',
+    tags: ['Agent safety', 'World models', 'Policy enforcement', 'Evaluation'],
+    publishedOn: '2026-11-03', paperDate: '2026-11-02',
+    authors: 'Weixiang Zhao, Zhihao Liu, Guancheng Li, Yanyan Zhao, Bing Qin et al.',
+    source: 'https://arxiv.org/abs/2611.02815v1',
+    readMinutes: 10, level: 'Advanced', accent: 'peach',
+    question: 'When a separate predictor warns an agent about the consequences of its next action, does the warning actually improve safe task completion?',
+    intuition: 'Risk prediction has three possible points of failure: the forecast can be wrong, the controller can misunderstand a correct forecast, or a restrictive gate can block useful work without stopping every unsafe action. More prediction calls are not necessarily better governance.',
+    mechanism: 'The authors contrast No Prediction with Prediction-Informed policies that read a world-model forecast and Prediction-Constrained policies that check candidate actions and may intervene before execution. They evaluate digital policy workflows in HarnessAudit and physical household tasks in IS-Bench. The main online comparison uses four policy backbones, with cross-predictor tests holding Qwen3.5-27B as the actor. Offline experiments analyze seven predictors at different action horizons, and controlled perturbations replace feedback with empty, irrelevant, corrupted or inverted predictions, plus sandbox-derived observations.',
+    reportedResults: [
+      'Across online experiments, mean tokens per digital task rose from 134,710.5 without prediction to 850,448.0 with constrained prediction (about 6.31 times); on physical tasks, from 44,681.1 to 140,805.6 (about 3.15 times).',
+      'In a Qwen3.5-27B digital comparison, normal constrained predictions yielded safety adherence 85.10 and task completion 82.41; fully inverted feedback yielded adherence 90.13 but task completion only 13.67. Higher adherence alone can mask severe loss of utility.',
+      'Even locally sandbox-verified action feedback did not eliminate downstream violations. Safety prediction also deteriorated at longer horizons; the paper does not support monotonic safety improvement from stronger prediction involvement.'
+    ],
+    evidence: 'Comparisons hold the actor backbone fixed within each primary online setting and include cross-model predictor substitutions. Safety, action validity and task completion are distinguished rather than collapsed into one success rate. Perturbed-feedback interventions test whether decisions use the actual forecast content, rather than merely reacting to the existence of a guard. Findings and numerical figures are author-reported, not independently replicated.',
+    limitations: 'Integration settings abstract existing guardrail classes rather than test every deployed product. Stronger guarding intrinsically adds calls and replanning, so the modes are not compute- or wall-time-matched. Token count is not a universal monetary cost: providers and caching policies differ. Sandbox checks cover immediate candidate effects rather than every future consequence. Horizon indices count action records rather than common elapsed time. First posted November 2, 2026; no separate journal publication is indicated.',
+    connections: ['This illustrates the gap between observability and control: knowing a risk is not enforcing a boundary.', 'An external least-privilege gate should enforce policy independent of an agents claimed intent or forecast.', 'Track both violation rate and successful permitted work, with resource-normalized comparisons.'],
+    verdict: 'Evaluate whether predictions change authorized behavior, not how convincingly an agent forecasts risk.'
+  },
+  {
+    slug: 'careful-bench-tool-side-effects',
+    title: 'A correct final state can hide dangerous tool calls.',
+    subtitle: 'CAREFUL-Bench audits destructive writes, redundant actions and actual consent.',
+    category: 'Evaluation',
+    tags: ['Tool calling', 'Side effects', 'Consent', 'Benchmarking'],
+    publishedOn: '2026-11-03', paperDate: '2026-11-02',
+    authors: 'Alexander Kovalenko and Artem Redchych',
+    source: 'https://arxiv.org/abs/2611.02978v1',
+    readMinutes: 10, level: 'Advanced', accent: 'blue',
+    question: 'Can an agent be graded successful even if it performs unauthorized destructive operations or needless side effects along the way?',
+    intuition: 'A benchmark that checks only the final database state may overlook duplicate writes, needless reads and actions the user never approved. Asking a clarifying question is also different from obtaining explicit consent to a destructive operation.',
+    mechanism: 'CAREFUL-Bench instruments the Berkeley Function Calling Leaderboard multi-turn simulators. It infers effect metadata for all 128 functions by executing calls and diffing state, with three annotators deciding which writes are destructive. A deterministic replay scorer tracks unrequested destructive calls, duplicate non-idempotent writes, redundant reads and surplus steps. A second protocol lets a scripted user respond to proposed actions and tests whether destructive calls are explicitly confirmed.',
+    reportedResults: [
+      'The effect metadata and scorer reproduce official results on 800 reference trajectories. For 11 open models, effect-aware scoring largely preserves model rank (Spearman correlation 0.99), but the highest-scoring model loses 14.0 percentage points due to collateral destructive calls.',
+      'Surplus steps consume roughly 2–28% of model input tokens across reported systems. Adding effect hints to tool documentation produced no statistically significant gain across eight evaluated models.',
+      'Among 576 conversations requiring destructive actions, the most any of eight evaluated models completed with all such actions explicitly confirmed was six. An interactive user recovered up to four accuracy points for models willing to ask.'
+    ],
+    evidence: 'The paper pins the BFCL evaluation harness version, runs four multi-turn categories of 200 conversations each, and uses executable simulator state rather than an LLM judge for its replay score. Open models are served via vLLM on an A100 40-GB GPU; some reported runs reuse earlier logs, and one API model is measured separately. The authors include budget estimates and a reproducible harness. These results are author-reported, not independently replicated.',
+    limitations: 'Simulators cannot observe side effects they do not model, such as an actual debit when placing an order. The destructive boundary is partly human/model-annotated; two annotators use the same model vendor, limiting independence. The scripted user can approve the right function with wrong arguments and cannot model real human risk preferences. Idempotence is sampled rather than formally proved; model decoding interfaces and some reused logs reduce absolute comparability. Larger proprietary API models were excluded on cost grounds. Original arXiv submission November 2, 2026; no journal publication is indicated.',
+    connections: ['Effect systems and database transaction semantics distinguish reads, idempotent writes and irreversible operations.', 'Separate users consent for an exact action from generic clarification; require approval close to the actual side effect.', 'Benchmark tool agents on entire trajectories, including collateral actions and wasted compute, not only final-state matches.'],
+    verdict: 'Treat side-effect safety and explicit authorization as first-class evaluation outcomes.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

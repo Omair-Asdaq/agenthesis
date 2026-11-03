@@ -291,6 +291,29 @@ export const papers: ResearchPaper[] = [
     connections: ['Predicting what a model will do differs from deciding whether that action is allowed.', 'Report session-level false intervention rates for long-running agents, not only call-level AUROC.', 'Keep secrets outside agent context where possible and use least-privilege tool credentials even with a monitor.'],
     verdict: 'Pre-output monitoring may be useful defense in depth, but it is not a substitute for hard permission boundaries.'
   },
+  {
+    slug: 'dittany-contribution-guided-agent-repair',
+    title: 'Repair the missing contribution, not the entire agent run.',
+    subtitle: 'Dittany combines local correction with dependency-graph recovery and reuses verified work.',
+    category: 'Reliability',
+    tags: ['Multi-agent', 'Runtime repair', 'Verification', 'Planning'],
+    publishedOn: '2026-11-03', paperDate: '2026-10-30',
+    authors: 'Hanqi Sun, Yuchen Shao, Hanyi Si, Beibei Xu, Lisheng Wang and Chengcheng Wan',
+    source: 'https://arxiv.org/abs/2610.42144v1',
+    readMinutes: 10, level: 'Advanced', accent: 'mint',
+    question: 'When a multi-agent workflow produces some useful work but fails an overall requirement, which actions should be repaired and which outputs should be retained?',
+    intuition: 'A failed final result does not mean every prior action was wrong. An itinerary may have valid transport choices but lack affordable accommodation. Retrying only the final assembler will fail if suitable inputs do not exist; restarting everything wastes good work. A dependency graph can connect each unmet requirement to the missing contribution and its possible producer.',
+    mechanism: 'Dittany extracts methods, interfaces, constraints and dependencies from a multi-agent application, builds a task contract and contribution graph, and configures acceptance checks. After tool or agent actions, it retains results only when their conditions are met. Action-level repair corrects the current invocation using available inputs; graph-level repair introduces or changes prerequisite subtasks when the required information is missing. Both paths recheck corrected results and their downstream use. Checks mix programmatic schema, calculation and reference validation with model-based semantic judgment.',
+    reportedResults: [
+      'Across 30 applications in six frameworks and 9,000 task instances, the authors report 84.76% task accuracy for Dittany versus 58.01% Native, 63.48% Reflexion, 58.21% Iterative Rollback, 48.39% SupervisorAgent and 50.41% AgentTether.',
+      'On 8,758 resolved detection labels, failure detection reached 88.28% precision and 79.18% recall. The other 242 cases were excluded as ambiguous or format-only discrepancies.',
+      'Estimated deployment tokens total 374.948 million, 17.92% above Native at 317.963 million but 24.19% below Reflexion. In an ablation, Full repair scored 84.76%, Graph-only 69.17% and Action-only 52.54%.'
+    ],
+    evidence: 'The study uses five applications each from AutoGen/AG2, CrewAI, LangGraph, Google ADK, HelloAgents and OpenAI Agents SDK, with 300 reference inputs per application. It reports task-level checks, application-level results and ablations under DeepSeek V4 Flash inference, temperature zero. External numerical and program checks support some outcomes, while semantic outcomes use a model judge. All results are author-reported and not independently replicated here.',
+    limitations: 'The baselines are complete recovery configurations, not fully cost-, tool- and wall-clock-matched single-agent controls; SupervisorAgent and AgentTether use modified configurations for five applications and their reported settings elsewhere. Token totals partly depend on estimates where provider usage was missing, and exclude offline grading. LLM-extracted specifications and LLM-based semantic checks may share blind spots with the agents under test; 242 unresolved/format-only runs were excluded from detection metrics. Results depend on six selected frameworks, task templates and available runtime observations. First posted October 30, 2026; no separate peer-reviewed journal publication is indicated. The paper does not establish public reproduction code availability.',
+    connections: ['This resembles incremental build systems and data lineage: recompute invalid downstream dependencies while retaining valid upstream artifacts.', 'A verifier should track unmet acceptance criteria separately from exceptions or successful tool-return status.', 'For agentic software engineering, compare local retry, rollback and graph repair under identical resource ceilings, and audit whether supposedly reusable outputs remain valid.'],
+    verdict: 'Track required contributions and their evidence, then recover the smallest invalid dependency region rather than blindly replaying the workflow.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

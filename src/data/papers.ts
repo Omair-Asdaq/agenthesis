@@ -383,6 +383,30 @@ export const papers: ResearchPaper[] = [
     connections: ['Effect systems and database transaction semantics distinguish reads, idempotent writes and irreversible operations.', 'Separate users consent for an exact action from generic clarification; require approval close to the actual side effect.', 'Benchmark tool agents on entire trajectories, including collateral actions and wasted compute, not only final-state matches.'],
     verdict: 'Treat side-effect safety and explicit authorization as first-class evaluation outcomes.'
   },
+  {
+    slug: 'verified-traces-to-agent-skills',
+    title: 'Can an agent turn verified experience into reusable skills?',
+    subtitle: 'Zep Agent Skills compiles cited procedures from successful traces, then governs their admission and reuse.',
+    category: 'Memory',
+    tags: ['Procedural memory', 'Agent skills', 'Verification', 'Evaluation'],
+    publishedOn: '2026-11-04', paperDate: '2026-11-01',
+    authors: 'Daniel Chalef, Peter Evans, Pavlo Paliychuk, Mehul Patel, Preston Rasmussen and Jack Ryan',
+    source: 'https://arxiv.org/abs/2611.01386v1',
+    readMinutes: 11, level: 'Advanced', accent: 'lilac',
+    question: 'Can an agent retain a verified procedure from an earlier run and help a weaker model repeat the task without fine-tuning its weights?',
+    intuition: 'A long transcript is a poor reusable instruction: it includes instance-specific values, irrelevant actions and possibly private information. A concise procedure with explicit preconditions, stop rules and evidence is more useful, but it becomes dangerous if the system admits unverified or poisoned instructions.',
+    mechanism: 'Zep Agent Skills records task attempts as ordered Traces with independently authenticated verification strength. Only strongly verified successes support new procedures; failures can serve as contrast. A Reflector proposes an addition or local patch and cites trace events for each claim. A separate Curator checks support, conflicts and existing skills. Trusted code validates citations, scans for sensitive data and instruction injection, and applies admission policies to immutable versions. Skills are scoped to namespaces and task families, retrieved through lexical search, and rendered in the portable Agent Skills format with progressive disclosure. Verified usage updates retrieval rank.',
+    reportedResults: [
+      'Across three executor models and three principal benchmarks, the authors report positive paired pass-rate changes in all 26 model-effort cells. On AppWorld Train/Dev, GPT-6 Luna at low effort rises from 68.5% to 87.3% (+18.8 points; 95% CI +10.2 to +28.3).',
+      'On EnterpriseOps-Gym, Claude Haiku 5.5 at low effort rises from 33.9% to 45.3% (+11.4 points; 95% CI +8.8 to +14.1). On tau-cubed banking, the pooled gain across eight cells is +8.6 points (95% CI +5.5 to +11.9), although only four cells pass Holm correction.',
+      'On ALFWorld valid_unseen, Qwen3-8B improves from 42.8% to 75.4% (+32.6 points) from the weak base and from 74.6% to 82.8% (+8.2) from the strong base. The cited continuous-fine-tuning comparison uses different baselines and harnesses.',
+      'For long banking tasks, tokens per passed episode fall by 7.0% to 44.6% across eight cells; on shorter AppWorld tasks they increase in seven of nine cells due partly to the fixed full-skill index.'
+    ],
+    evidence: 'The teacher is Claude Opus 5.5 at maximum effort for tau-cubed banking (97 tasks, four trials), AppWorld Train/Dev (147 tasks, three trials) and EnterpriseOps-Gym (625 tasks, three trials). Executors are GPT-6 Luna, Claude Haiku 5.5 and DeepSeek V4.1 Flash, paired by task and trial with and without compiled Skills. The authors report bootstrap intervals, multiplicity correction for banking and AppWorld, explicit benchmark modifications, hidden-check isolation and leakage scans. ALFWorld separately tests cross-room transfer. These results are author-reported; no independent replication was performed here.',
+    limitations: 'The main three benchmarks reuse the same tasks the teacher attempted, so they primarily measure repeating known tasks, not generalization to new tasks. The Skills arm changes context length and tool access, and no separate arm isolates the skill-index overhead. In AppWorld the entire 62-skill index adds roughly 2,300 prompt tokens to every call, unlike production search. The reported fine-tuning comparison is cross-paper and not harness- or base-matched. Verified outcomes authenticate a verifier but do not prove that the verifier is correct; automatic admission and LLM-generated procedures retain poisoning risks. Some EnterpriseOps tasks regress after similar but contradictory procedures are merged. Authors are affiliated with the product vendor. Original arXiv v1 was posted November 1, 2026; no journal publication is indicated.',
+    connections: ['Procedural memory is closer to a versioned build artifact with provenance than a transcript search result.', 'For agentic software engineering, bind every learned repair procedure to passing tests, source traces and an explicit applicability contract.', 'Evaluate skill retrieval with held-out task families, matched token and tool budgets, poisoning probes and rollback tests before trusting automatic promotion.'],
+    verdict: 'Verified, cited skills can make repeated tasks more reliable, but cross-task transfer and safe automatic admission remain open questions.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

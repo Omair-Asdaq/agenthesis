@@ -407,6 +407,52 @@ export const papers: ResearchPaper[] = [
     connections: ['Procedural memory is closer to a versioned build artifact with provenance than a transcript search result.', 'For agentic software engineering, bind every learned repair procedure to passing tests, source traces and an explicit applicability contract.', 'Evaluate skill retrieval with held-out task families, matched token and tool budgets, poisoning probes and rollback tests before trusting automatic promotion.'],
     verdict: 'Verified, cited skills can make repeated tasks more reliable, but cross-task transfer and safe automatic admission remain open questions.'
   },
+  {
+    slug: 'verified-but-vacuous-code-proofs',
+    title: 'A proof checker can accept code that proves almost nothing.',
+    subtitle: 'Three failure surfaces separate verifier acceptance from specification fidelity.',
+    category: 'Verification',
+    tags: ['Coding agents', 'Formal verification', 'Specifications', 'Evaluation'],
+    publishedOn: '2026-11-06', paperDate: '2026-11-05',
+    authors: 'Aditya Vempaty et al.',
+    source: 'https://arxiv.org/abs/2611.05590v1',
+    readMinutes: 11, level: 'Advanced', accent: 'mint',
+    question: 'When a coding agent produces a machine-checked certificate, what exactly has been proved?',
+    intuition: 'A formal verifier can prove a vacuous contract perfectly. Acceptance only means the implementation satisfies the obligations actually supplied to the verifier, not necessarily the human requirements.',
+    mechanism: 'The authors separate three surfaces: A, the verifier accepts; B, the implementation certificate syntactically binds to an externally named specification predicate; and C, the specification is semantically strong enough to reject incorrect implementations. They reproduce a Dafny-as-intermediate-language pipeline with Claude Opus 4.7, then build a seven-agent VCG pipeline that explicitly enforces a binding gate and tests generated Rust against hidden oracles.',
+    reportedResults: [
+      'On HumanEval, the Li@Opus reproduction obtains 99.1% Dafny acceptance but only 1.9% certificates bound to a specification-defined predicate or function; binding remains 1.9–2.7% across three Python benchmarks.',
+      'Among 1,080 fully verified MBPP-Rust attempts, 124 fail hidden tests (11.48%); among 1,545 fully verified VeriContest-LC attempts, 229 fail (14.82%). These are conditional failure rates among verified outputs, not rates across all attempts.',
+      'The authors compare 164 HumanEval, 228 LeetCodeDataset, 1,055 LiveCodeBench v6, 208 MBPP-Rust and 687 VeriContest-LC problems, typically ten samples per problem.'
+    ],
+    evidence: 'All three primary pipelines use Claude Opus 4.7 via Vertex AI; VCG uses Dafny 4.10 and Z3 4.13. The paper discloses compilation and harness-shimming exclusions and distinguishes same-backend experiments from external, unmatched published baselines. Hidden tests provide an operational proxy for semantic fidelity. All numerical results are author-reported; no independent replication was performed here.',
+    limitations: 'Same model does not mean equal token, repair, time or monetary budgets; the external VeriContest comparison also differs in sampling. The ensures-binding gate is a syntactic necessary check, not a proof that a specification captures intent. Hidden-test failures could reflect transpilation or oracle disagreements, not solely weak specifications. Main-body results are point estimates without confidence intervals. All primary runs use one model family. The paper was first submitted November 5, 2026, with no journal version identified.',
+    connections: ['The difference between proof validity and specification validity mirrors the difference between passing tests and satisfying requirements.', 'For autonomous PR agents, require both a machine-checkable invariant and independent behavioral acceptance tests.', 'Record the exact proof obligation and assumptions alongside every claimed verified completion.'],
+    verdict: 'A green verifier result is evidence about the supplied contract, not automatic evidence that the contract is correct.'
+  },
+  {
+    slug: 'verified-tool-health-agent-routing',
+    title: 'Give agents measured tool health, not guesses.',
+    subtitle: 'Verified telemetry can improve route choice before a tool call.',
+    category: 'Reliability',
+    tags: ['Tool use', 'Harnesses', 'Observability', 'Evaluation'],
+    publishedOn: '2026-11-06', paperDate: '2026-11-05',
+    authors: 'Manu Agrawal and Shrey Nagpal',
+    source: 'https://arxiv.org/abs/2611.05391v1',
+    readMinutes: 9, level: 'Advanced', accent: 'blue',
+    question: 'Can a tool-using agent choose a healthier execution route if the host exposes fresh, independently observed failures and latency?',
+    intuition: 'An agent may favor the first familiar tool even when an equivalent route is unhealthy. A compact host-owned snapshot can turn tool selection from intuition into a decision informed by current measurements.',
+    mechanism: 'Agent Harness Awareness proposes a structured state snapshot for operational context. The evaluated ToolRoute slice exposes recent successes, exponentially weighted latency, consecutive failures, circuit state and freshness for two equivalent routes. The main ablation compares task-only instructions (A), an identical but neutral telemetry envelope (B), and actual host-verified state (C). A second study executes selected routes over local HTTP/TCP with OpenTelemetry spans and Toxiproxy-injected latency, connection and HTTP faults.',
+    reportedResults: [
+      'In 216 frozen decisions across three model families and three information conditions, verified state achieved 69/72 single-dispatch completions (95.8%) versus 50/72 (69.4%) for the neutral structural control, a 26.4-point difference.',
+      'The authors report mean observable policy regret of 131.12 ms with verified state versus 4,251.54 ms for neutral state (96.9% lower). This regret includes frozen synthetic failure and waiting penalties, not measured network latency alone.',
+      'In the separate 27-decision live transport study, verified state completed 9/9 actions against 5/9 for the neutral control; the nine verified-state cases are too few for a broad population-level claim.'
+    ],
+    evidence: 'The controlled study uses GPT-5.6 Sol, Claude Sonnet 5 and Gemini 3.7 Flash with frozen conditions and no request retries. The live study retains OpenTelemetry spans, injected fault manifests and post-action outcomes. The neutral-envelope control isolates route-relevant information from merely showing an extra interface. The authors report Wilson intervals and frozen analysis artifacts; findings are not independently replicated here.',
+    limitations: 'The two routes are functionally equivalent, and the tasks measure pre-dispatch selection, not heterogeneous tool choice, non-idempotent operations or autonomous multi-step recovery. There are only nine live decisions per condition. Regret is based partly on a designed cost function, and route naming/order may bias neutral choices. The study does not equalize provider billing, total context tokens or production latency across every deployment. A stale snapshot can mislead unless the host revalidates before execution. The arXiv version is listed November 5, 2026; an inconsistent internal manuscript date should not override the submission record.',
+    connections: ['This is a control-plane/data-plane separation: the host measures reliability, while the model chooses among permitted routes.', 'For coding agents, supply verified sandbox, queue, tool and quota status instead of asking the model to infer availability from failed calls.', 'Compare against deterministic middleware failover; simple replica selection may not require an LLM at all.'],
+    verdict: 'Host-verified telemetry improves tested route decisions, but deterministic routing remains the appropriate baseline for equivalent replicas.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

@@ -453,6 +453,52 @@ export const papers: ResearchPaper[] = [
     connections: ['This is a control-plane/data-plane separation: the host measures reliability, while the model chooses among permitted routes.', 'For coding agents, supply verified sandbox, queue, tool and quota status instead of asking the model to infer availability from failed calls.', 'Compare against deterministic middleware failover; simple replica selection may not require an LLM at all.'],
     verdict: 'Host-verified telemetry improves tested route decisions, but deterministic routing remains the appropriate baseline for equivalent replicas.'
   },
+  {
+    slug: 'continuous-benchmark-maintenance-debt',
+    title: 'Benchmarks break as agents improve.',
+    subtitle: 'Terminal-Bench 2.1 shows why executable evaluations need versioned repairs and resource audits.',
+    category: 'Evaluation',
+    tags: ['Coding agents', 'Benchmark validity', 'Harnesses', 'Verification'],
+    publishedOn: '2026-11-07', paperDate: '2026-11-05',
+    authors: 'E. Kelly Buchanan, Crystal Zhou, Scott W. Linderman and Christopher Ré',
+    source: 'https://arxiv.org/abs/2611.08417v1',
+    readMinutes: 11, level: 'Advanced', accent: 'blue',
+    question: 'If a coding agent fails a benchmark, how do we know the agent is wrong rather than the task, environment, verifier or time limit?',
+    intuition: 'Executable benchmarks are software systems, not immutable answer sheets. Valid new solutions can violate a narrow grader, dependencies drift, and the reference solution itself can exhaust resources. A benchmark score therefore measures an agent interacting with a particular version of a task and its execution budget.',
+    mechanism: 'The authors build a continuous-validation workflow that collects community issue reports, task files and execution traces. An auditor agent proposes cited diagnoses and repairs; automated oracle checks rebuild and exercise reference solutions; human maintainers approve changes. Repairs address instruction–verification mismatch, environment resource failures and task drift. Terminal-Bench 2.0 is audited and released as 2.1, then 19 agents are evaluated on both versions. Separate longer-time-budget experiments probe harness speed confounds.',
+    reportedResults: [
+      'The authors identify 28 defective tasks, roughly 30% of Terminal-Bench 2.0, including 12 cases of post-release drift. They repair the benchmark rather than simply deleting all flagged cases.',
+      'Across 19 agents, benchmark repairs shift individual accuracy by up to 12 percentage points and leaderboard position by up to three places, although rank correlation remains high: Spearman rho 0.958 with task-bootstrap 95% interval [0.881, 0.979].',
+      'Increasing the wall-clock budget closes a roughly 20-point harness gap on GPT-5.4 and shrinks an approximately 30-point gap to five points on GPT-5.4 mini. Thus fixed-time rankings partly measure execution speed rather than eventual task completion.'
+    ],
+    evidence: 'The paper documents a versioned TB2.1 repair artifact, oracle rebuilding, trace-backed issue adjudication, and re-evaluation of 19 model–harness combinations under a shared benchmark protocol. A separate Harbor-Index audit finds additional defects but also misses some found by manual review. Confidence intervals are task-bootstrapped; the longer-budget condition covers only a subset of agents for cost reasons. All numbers are author-reported, not independently replicated.',
+    limitations: 'The repaired task set is not a random sample of all coding-agent benchmarks, and maintainer adjudication can introduce judgment calls. Not all environments or providers share identical execution infrastructure, and time-budget experiments are not a fully matched dollar/token comparison. Repairs can change what the benchmark measures, so both old and new versions must remain attributable. Some bugs escaped the automated workflow. The arXiv record lists v1 submitted November 5, 2026; no journal publication is indicated.',
+    connections: ['Treat benchmarks like production software: pin dependencies, version task digests, run regression checks and review changes.', 'A model–harness leaderboard must disclose wall time, output-token ceilings, sandbox resources and benchmark version.', 'Distinguish a failed agent patch from a defective oracle before using that trace for agent training.'],
+    verdict: 'Continuous benchmark maintenance is part of measurement validity, not an optional cleanup step.'
+  },
+  {
+    slug: 'mcphallu-agent-failure-subtypes',
+    title: 'Tool agents can fail in four different ways.',
+    subtitle: 'MCPHallu isolates branch errors, impossible goals, tool misuse and forgotten state.',
+    category: 'Evaluation',
+    tags: ['MCP', 'Tool use', 'Agent memory', 'Failure analysis'],
+    publishedOn: '2026-11-07', paperDate: '2026-11-05',
+    authors: 'Yizhen Jiang, Haowei Guo, Tianyi Bai, Zengjie Hu, Lu Ma, Zhengyang Zhao, Haoze Sun, Peng Pei and Wentao Zhang',
+    source: 'https://arxiv.org/abs/2611.07689v1',
+    readMinutes: 10, level: 'Advanced', accent: 'mint',
+    question: 'Why does an agent with valid MCP tools still claim completion of impossible tasks, choose misleading tools or forget earlier state?',
+    intuition: 'A single end-to-end success score hides distinct failure mechanisms. An agent might correctly execute calls yet aggregate the wrong branch, confuse similar tool schemas, keep working toward an unreachable goal, or fail to preserve state across a long interaction. Those require different fixes.',
+    mechanism: 'MCPHallu builds 358 tasks in search, analytics, productivity, finance and coding, using 36 production MCP servers in isolated containers. Each task has a designed structural trigger for Branch Collapse, Unreachable Goal, Tool Misuse or Context Forgetting. Reference scripts, post-execution state assertions, dependency graphs and tool-confusion checks provide deterministic evidence; an LLM judge contributes a minority share of the subtype score. Fourteen models are tested in a ReAct-style loop with a 128k context window and a 20-tool-call limit.',
+    reportedResults: [
+      'Across 5,012 agent trajectories, the 14-model mean composite score is 0.642 on a zero-to-one scale; the highest model score is 0.728. The overall binary pass rate is 47.8%.',
+      'Unreachable Goal is the hardest subtype for 12 of 14 models: its average score is 0.458 and only 23.2% of runs pass. Continuing to act or falsely claiming success is a frequent failure.',
+      'Model ranks move by an average 6.9 of 13 positions across subtypes; Branch Collapse and Unreachable Goal scores have correlation r = -0.12 across models. A single aggregate leaderboard hides specialization.'
+    ],
+    evidence: 'All evaluated models share a ReAct-style framework, a 20-call tool budget, task-specific tool inventories and fresh container state per episode. The authors report expert subtype-attribution agreement, cross-judge and human checks, uncertainty and score-weight sensitivity analyses, plus released benchmark code and pinned server versions. The primary semantic judge is GPT-4o, while Claude Sonnet 4.6 generated tasks. These are author-reported results, not independently replicated.',
+    limitations: 'Designed triggers promote a failure subtype but do not establish causality or statistical independence of reasoning, execution and memory errors. The task generator and judge are proprietary, and deterministic scoring is not complete: semantic judgment contributes 20–30%. Sixteen of 36 servers require external credentials, complicating fully offline reproduction. The inventory is static per task, mostly English and Western SaaS, excluding cross-session memory and dynamic server churn. A shared tool-call cap does not equalize provider costs, latency or total tokens. The original arXiv v1 was submitted November 5, 2026; no journal publication is indicated.',
+    connections: ['For production MCP agents, measure false completion, mistaken tool selection and state persistence separately.', 'Infeasibility recognition should be rewarded when a goal cannot be met, without rewarding blanket refusal.', 'An agent can look competent on easy tool calls yet be unreliable under long-horizon branching and state changes.'],
+    verdict: 'Failure-mode-specific evaluation is more actionable than one aggregate agent score.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

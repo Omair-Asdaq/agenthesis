@@ -499,6 +499,52 @@ export const papers: ResearchPaper[] = [
     connections: ['For production MCP agents, measure false completion, mistaken tool selection and state persistence separately.', 'Infeasibility recognition should be rewarded when a goal cannot be met, without rewarding blanket refusal.', 'An agent can look competent on easy tool calls yet be unreliable under long-horizon branching and state changes.'],
     verdict: 'Failure-mode-specific evaluation is more actionable than one aggregate agent score.'
   },
+  {
+    slug: 'coati-host-grounded-mobile-agents',
+    title: 'Let the phone verify what the agent actually did.',
+    subtitle: 'Coati joins host evidence, guarded memory and step-level routing for installable mobile agents.',
+    category: 'Reliability',
+    tags: ['Mobile agents', 'Verification', 'Memory', 'Tool use'],
+    publishedOn: '2026-11-08', paperDate: '2026-11-02',
+    authors: 'Yudou Ying, Pu Shi, Hanlei Shi and Yuhua Zheng',
+    source: 'https://arxiv.org/abs/2611.02644v1',
+    readMinutes: 9, level: 'Advanced', accent: 'mint',
+    question: 'If a GUI agent says a tap worked or a task is finished, what independent evidence should justify believing it?',
+    intuition: 'A model can misread a screen transition, declare success prematurely or repeat expensive reasoning for simple taps. The host that executes actions can instead record state changes, use those observations to audit completion, and remember only interface facts supported by evidence.',
+    mechanism: 'Coati runs as an installable Android app. VerifyLoop compares action outcomes and final completion claims with host-observed screens and progress; unauditable completion is marked unverified. AppMemory keeps per-app living manuals tied to package identity, version and locale, admitting sanitized observations only when supported by stable interface evidence and a successful completion audit. A fast selector handles host-resolvable steps; uncertain steps return to a larger reasoning model, and the host can execute a planned loop of simple actions while tracking progress.',
+    reportedResults: [
+      'On all 116 AndroidWorld tasks over three trials with Gemini 3.8 Flash as the common backbone, Coati reports 86.5% success versus 77.6% for Artemis in accessibility-only mode and about 59% for FinalRun and Midscene.',
+      'The authors report about one-third fewer false completion claims with VerifyLoop at comparable success. In everyday tasks, routed execution cuts median task time by 39% at comparable success; three of four repetitive loops are 2.8–5.4 times faster with 6–9 times fewer model tokens.',
+      'In three repeated-navigation learning sessions, a deep unfamiliar route falls from a median 18.5 steps without memory to 6–7 after learning. On an Android 16 phone, 27 routed runs finish versus 26 per-step runs, with critical-path reasoning calls falling from 285 to 67.'
+    ],
+    evidence: 'The AndroidWorld comparison fixes the 116 tasks, official evaluators, task seed, Android 13 emulator, model backbone and per-task step budget, and reruns environment failures consistently. The released opponent implementations are adapted to the shared harness. Separate paired everyday-task, loop and memory experiments isolate operational mechanisms; an Android 16 phone provides a smaller hardware check. The paper and appendices document implementation and protocols. All results are author-reported, not independently replicated.',
+    limitations: 'The standardized official step limits are far tighter than some opponents released configurations, and accessibility-only operation excludes privileged ADB and root database actions; comparisons therefore do not reproduce each opponents headline setup. The principal benchmark uses one backbone and emulator, while everyday memory evidence relies on small fixture-app samples. Token counts and latency are not equal-budget controlled; server delays matter. Screenshots and descriptions can leave the device for external models, and autonomous Accessibility Service use faces app-store restrictions. Original arXiv v1 submitted November 2, 2026; no journal publication is indicated.',
+    connections: ['A completion claim is an assertion; a host-recorded postcondition is evidence.', 'Verified procedural memory should be admitted only after successful execution and checked against current app identity.', 'Routing simple GUI steps resembles a fast-path/slow-path architecture, but pre-commit gates should retain control over consequential actions.'],
+    verdict: 'Ground completion and memory in observed execution, while treating the reported speed gains as task- and platform-specific.'
+  },
+  {
+    slug: 'crossswe-cross-repository-coding',
+    title: 'A patch can work locally and still break its neighbor.',
+    subtitle: 'CrossSWE tests whether coding agents maintain contracts across repository boundaries.',
+    category: 'Evaluation',
+    tags: ['Coding agents', 'Cross-repository', 'Compatibility', 'Benchmarks'],
+    publishedOn: '2026-11-08', paperDate: '2026-11-01',
+    authors: 'Silin Chen, Yuling Shi, Heng Lian, Zihan Zhang, Xiaodong Gu, Haotian Lin and Zhensu Sun',
+    source: 'https://arxiv.org/abs/2611.01484v1',
+    readMinutes: 9, level: 'Advanced', accent: 'blue',
+    question: 'Can a coding agent change a library and its consumer together, preserving the interface between them?',
+    intuition: 'Ordinary repository benchmarks usually grade one patch in one codebase. Real changes to APIs, protocols and dependencies can require coordinated fixes in two or more repositories; success in one checkout can coexist with a broken contract in another.',
+    mechanism: 'CrossSWE constructs 171 real-world instances spanning 165 repositories, 20 domains and 13 languages. Each task provides multiple repositories at pinned base commits inside a Docker environment and tests the combined final state. Human screening removes merely documentary cross-links; the construction pipeline checks that modifying only one repository cannot satisfy the joint task. Five models use the same mini-SWE-agent v2.4.6 shell harness, high reasoning effort, a 300-step cap and a $10 maximum model cost per instance.',
+    reportedResults: [
+      'The authors report Pass@1 of 58.48% for GPT-6.1 Sol, 52.63% for DeepSeek V4.1 Flash, 50.29% for Claude Sonnet 5.5, 45.03% for Qwen3.8-Flash-Next and 43.86% for GLM-5.3 Flash.',
+      'In 330 derived single-side tasks from the two-repository instances, GPT-6.1 Sol rises from 58.48% joint to 64.55% single-side, and DeepSeek V4.1 Flash rises from 52.63% to 61.81%. These are related but not identical task formulations.',
+      'Cross-repository inconsistencies account for 44.2% of GPT-6.1 Sol failures, 41.2% of Claude failures, 29.2% of DeepSeek failures and 40.7% of GLM failures. Average steps vary substantially by model, from 29.2 for Claude to 182.1 for Qwen.'
+    ],
+    evidence: 'Instances derive from GitHub development history and include gold patches, executable tests and multi-repository environments. A shared harness, fixed task set and common step and dollar ceilings improve comparability. The paper reports input/output tokens, steps and cost as well as success; its single-side contrast tests whether joint modification is harder than access to multiple repositories alone. Benchmark materials are described in the appendix. All figures are author-reported, not independent replication.',
+    limitations: 'Most instances (165 of 171) involve exactly two repositories, and the participating repositories are supplied rather than discovered. Manual failure categorization may introduce subjective boundaries. Shared ceilings do not equalize realized tokens, latency or dollars across models; different model-specific interaction patterns confound architecture-level conclusions. The comparison with a separate benchmark score is not harness- or task-matched. Reproducibility depends on availability of pinned dependencies and benchmark artifacts. Original arXiv v1 submitted November 1, 2026; no journal publication is indicated.',
+    connections: ['Cross-repository development resembles distributed schema migration: compatibility must hold at every interface, not just inside each service.', 'A useful coding-agent test should run provider and consumer integration checks against the combined patch.', 'A multi-agent split by repository can increase coordination risk unless an integration verifier owns cross-boundary contracts.'],
+    verdict: 'Evaluate coding agents on jointly necessary changes and interface consistency, not merely isolated patch success.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

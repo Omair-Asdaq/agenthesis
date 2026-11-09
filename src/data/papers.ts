@@ -545,6 +545,76 @@ export const papers: ResearchPaper[] = [
     connections: ['Cross-repository development resembles distributed schema migration: compatibility must hold at every interface, not just inside each service.', 'A useful coding-agent test should run provider and consumer integration checks against the combined patch.', 'A multi-agent split by repository can increase coordination risk unless an integration verifier owns cross-boundary contracts.'],
     verdict: 'Evaluate coding agents on jointly necessary changes and interface consistency, not merely isolated patch success.'
   },
+  {
+    slug: 'decaf-decomposed-harness-optimization',
+    title: 'Optimize the agent pipeline one dimension at a time.',
+    subtitle: 'DeCAF diagnoses prompts, topology, model selection and tool policies before composing a new harness.',
+    category: 'Evaluation',
+    tags: ['Harnesses', 'Optimization', 'Coding agents', 'Cost'],
+    publishedOn: '2026-11-09', paperDate: '2026-11-05',
+    authors: 'Divij Handa, Christopher Tensmeyer, Jihyung Kil and Vlad I. Morariu',
+    source: 'https://arxiv.org/abs/2611.08723v1',
+    readMinutes: 10, level: 'Advanced', accent: 'mint',
+    question: 'Can a coding agent improve an entire agent harness more reliably by testing isolated design dimensions than by rewriting the whole pipeline at once?',
+    intuition: 'Prompts, agent topology, model choice and tool policies interact, so a monolithic optimizer has difficulty identifying which change helped. Isolating dimensions yields interpretable experiments, while a final synthesis step tests whether individually promising changes coexist.',
+    mechanism: 'DeCAF partitions harness search into dimensions, uses coding agents to run targeted experiments on each, and composes their findings into a candidate pipeline. A component-level trajectory evaluator derives rubrics from individual agent instructions to diagnose where the resulting pipeline underperforms. The authors evaluate held-out tasks from AppWorld, LiveCodeBench, AgentDojo and PostTrainBench v1.1 against an unoptimized seed and GEPA, MASPO and Meta-Harness optimizers; they also examine stronger unoptimized model backbones.',
+    reportedResults: [
+      'Across four benchmarks, the authors report an average 2.58-percentage-point task-performance gain, 4.30% lower deployment inference cost and 42.45% lower per-task latency than Meta-Harness. These aggregate figures mix different benchmark-specific performance metrics.',
+      'In the AgentDojo comparison, DeCAF reports 85.4% under-attack task performance, 91.6% benign performance and 0.7% attack success, with $0.0126 per-instance inference cost and 25.6-second latency. Meta-Harness reports 85.4%, 89.0%, 1.0%, $0.0133 and 37.4 seconds respectively.',
+      'Optimization itself is not free: the AgentDojo DeCAF search consumed $26.48 and 4h43m of optimizer time, while Meta-Harness used $28.74 and 7h12m. On some other tasks, DeCAF spends more optimization budget than alternatives.'
+    ],
+    evidence: 'The paper provides separate development and held-out test splits, per-instance deployment cost and latency, one-time optimizer cost and wall time, stronger-backbone controls, ablations, algorithm details and prompts. Parallel dimension search can reduce elapsed optimizer time without reducing aggregate work. The paper reports mean scores with standard errors for benchmark-specific comparisons. All figures are author-reported, not independently replicated.',
+    limitations: 'Different optimizers may consume different search budgets and wall time, so performance is not an equal-budget causal comparison. A stronger backbone can outperform optimized smaller-model pipelines in raw success at greater cost. The average 2.58-point improvement pools heterogeneous metrics; it is not a universal percentage-point gain on every benchmark. Generated code and LLM-derived component rubrics can introduce optimizer-specific judgment errors. First arXiv version submitted November 5, 2026; no journal publication is indicated.',
+    connections: ['Treat harness tuning like controlled software experimentation: change one dimension, inspect trajectories and verify held-out behavior.', 'Measure deployment cost separately from the one-time search cost, and amortize optimization across expected task volume.', 'A final integration test is essential because locally beneficial modifications may interfere when combined.'],
+    verdict: 'Decomposed harness search offers a testable engineering workflow, but its advantage must be judged with full optimization budgets.'
+  },
+  {
+    slug: 'memorydojo-cross-session-poisoning',
+    title: 'A poisoned memory can outlive the attack.',
+    subtitle: 'MemoryDojo traces how untrusted instructions are stored, retrieved and acted upon across sessions.',
+    category: 'Safety',
+    tags: ['Agent memory', 'Prompt injection', 'Evaluation', 'Security'],
+    publishedOn: '2026-11-09', paperDate: '2026-11-06',
+    authors: 'David H. Yang, Blake Bullwinkel, Amanda Minnich, Mohammad Mohammadi Amiri and Giorgio Severi',
+    source: 'https://arxiv.org/abs/2611.09721v1',
+    readMinutes: 11, level: 'Advanced', accent: 'peach',
+    question: 'If malicious instructions appear in one session, can an agent memory system preserve them and cause unsafe behavior in unrelated later sessions?',
+    intuition: 'A transient malicious message may be promoted into durable memory and later retrieved as seemingly trusted context. A single attack-success number hides whether the payload was stored, survived memory consolidation, resurfaced during retrieval or actually changed behavior.',
+    mechanism: 'MemoryDojo runs 155 multi-session trajectories, totaling 2,162 task sessions across workspace, travel, banking and Slack scenarios, against five memory architectures: A-MEM, Graphiti, Letta, Mem0 and Memora. It instruments insertion, persistence, retrieval and downstream behavioral reach, and tests optimized poisoning payloads as well as cross-domain and history-prefixed transfer. The goal is comparative diagnosis, not a claim that any one architecture is universally secure.',
+    reportedResults: [
+      'In one same-domain setting, the authors report A-MEM behavioral reach increasing from 45.70% to 70.97% after memory-aware payload optimization, while Letta rises from 16.67% to 50.54%. These are benchmark-specific attack metrics, not rates of compromise in production.',
+      'The optimized same-domain results show sharply different storage and retrieval behavior: Mem0 insertion success is 77.42% and Graphiti insertion success 100%, yet their downstream behavioral reach is 39.78% and 30.11%, respectively.',
+      'In history-prefixed cross-domain tests, reported behavioral reach ranges from 0% for Letta to 45.16% for Memora, underscoring the sensitivity to architecture and attack placement.'
+    ],
+    evidence: 'The paper separates 93 same-domain, 31 cross-domain and 31 history-prefixed cross-domain trajectories; it records insertion, retrieval and behavioral outcomes rather than relying on final answers alone. It also reports multiple agent-model settings and alternative placement experiments. Metrics have different denominators and should not be conflated. All results are author-reported, not independent replication.',
+    limitations: 'The benchmark covers four application domains and five particular memory integrations, not all deployed agent memory systems. The authors state that code, benchmark data and integrations will be released later, limiting immediate independent reproduction. Poison optimization changes attacker effort, so optimized and unoptimized outcomes are not equal-attack-budget conditions. Results depend on retrieval policies, model backbones and constructed trajectories; cross-domain success does not imply general real-world prevalence. Original arXiv v1 submitted November 6, 2026; no journal publication is indicated.',
+    connections: ['Persistent memory is a trust-boundary crossing: provenance and authorization should survive summarization and retrieval.', 'Security tests should measure insertion, retention, retrieval and behavioral effect separately.', 'Memory invalidation and quarantining suspicious content are as important as filtering the original tool response.'],
+    verdict: 'Evaluate memory poisoning across sessions and architectures; do not treat stored text as trusted instruction.'
+  },
+  {
+    slug: 'phantom-consensus-multiagent-judgment',
+    title: 'A group of agents can agree on something none privately believed.',
+    subtitle: 'PHANTOM-Bench distinguishes genuine collective judgment from conformity to ambiguous social signals.',
+    category: 'Coordination',
+    tags: ['Multi-agent', 'Evaluation', 'Reasoning', 'Governance'],
+    publishedOn: '2026-11-09', paperDate: '2026-11-06',
+    authors: 'Disha Sheshanarayana, Rajat Subhra Pal, Manjira Sinha and Tirthankar Dasgupta',
+    source: 'https://arxiv.org/abs/2611.08971v1',
+    readMinutes: 9, level: 'Intermediate', accent: 'lilac',
+    question: 'Does a multi-agent consensus reflect independently held judgments, or can ambiguous public signals manufacture the appearance of agreement?',
+    intuition: 'When agents observe hints of what peers supposedly think, they may revise public decisions even though the private votes do not support the apparent majority. Final agreement alone therefore cannot distinguish evidence-based convergence from social-pressure artifacts.',
+    mechanism: 'PHANTOM-Bench records isolated private judgments from four-agent groups, exposes ambiguous public signals, elicits agents estimates of their peers private judgments, and compares resulting public decisions with transparency, neutral-text and explicit-vote controls. The action set is proceed, block or defer/review. Metrics separate ordinary accuracy degradation, false inferred group beliefs, phantom-aligned failures and recovery after private judgments are revealed.',
+    reportedResults: [
+      'The authors report Qwen-2.5-7B accuracy falling from 77.0% in private judgment to 29.2% after ambiguous public signals, a 47.8-percentage-point decline; Qwen-2.5-32B falls from 73.1% to 42.1%, a 31.0-point decline.',
+      'For Gemini-2.5-Pro, observed-public phantom-target alignment is reported at 19.4%, versus 6.5% with neutral public text and 15.1% with explicit voting. Other models show smaller or reversed differences relative to explicit voting.',
+      'Scenario-level bootstrap confidence intervals preserve the within-scenario four-agent grouping; the authors report that major trends persist under this resampling.'
+    ],
+    evidence: 'The experimental design separates private ground truth from inferred peer beliefs and tests neutral and explicit-vote controls, limiting the risk of interpreting any conformity as phantom consensus. Several open- and closed-weight models are compared using the same constructed decision format. The study also reports transparency-based recovery and bootstrap uncertainty. Results are author-reported, not independently replicated.',
+    limitations: 'This is a controlled four-agent, three-action benchmark across five domains, not live multi-round agent deliberation. The public signals are designed stimuli, so measured failure rates cannot be projected onto deployed systems. Different model families may interpret the wording differently, and a shared prompt format does not guarantee equal model cost or reasoning budgets. The authors explicitly avoid claims about human-like theory of mind. Original arXiv v1 submitted November 6, 2026; accepted at the NeurIPS 2026 SocialAgent Workshop, with no separate journal version indicated.',
+    connections: ['Require independent initial judgments before showing peer votes in multi-agent review systems.', 'Audit disagreement and changes of mind, not only final majority or consensus.', 'Transparency of private votes can help distinguish genuine agreement from inferred social pressure.'],
+    verdict: 'Multi-agent consensus is not evidence of correctness unless the underlying independent judgments are observable.'
+  },
+
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

@@ -615,6 +615,29 @@ export const papers: ResearchPaper[] = [
     verdict: 'Multi-agent consensus is not evidence of correctness unless the underlying independent judgments are observable.'
   },
 
+  {
+    slug: 'coding-agents-propagate-repository-vulnerabilities',
+    title: 'Coding agents can copy the security mistakes they read.',
+    subtitle: 'Paired repository contexts show how insecure examples become new vulnerabilities.',
+    category: 'Safety',
+    tags: ['Coding agents', 'Software security', 'Repository context', 'Evaluation'],
+    publishedOn: '2026-11-11', paperDate: '2026-11-08',
+    authors: 'Chenhao Sun, Niels Mündler-Sasahara, Mark Vero and Martin Vechev',
+    source: 'https://arxiv.org/abs/2611.11455v1',
+    readMinutes: 11, level: 'Advanced', accent: 'peach',
+    question: 'If an agent is asked to implement the same feature twice, can merely changing the security of similar code elsewhere in the repository change whether its patch is vulnerable?',
+    intuition: 'Repository examples act as implicit demonstrations. An agent that imitates surrounding conventions may copy a missing bounds check or unsafe input-handling pattern along with legitimate architecture. Being able to explain a vulnerability after writing it is not equivalent to avoiding it during generation.',
+    mechanism: 'The researchers intervene on repository context while keeping the target implementation task fixed. In 96 backend tasks adapted from AutoBaxBench, agents implement a new service with no neighbors, secure neighboring services or insecure neighboring services; functionality and security tests grade the output. In a second evaluation, 20 paired tasks from five real C/C++ repositories mask memory-safety-critical code and vary only secure versus insecure analogous code elsewhere. Agents implement the missing region, build the project and face a vulnerability-specific proof-of-concept input. Prompt ablations ask agents to follow existing style, avoid copying bugs or follow generic security best practices.',
+    reportedResults: [
+      'In the backend setting, insecure neighbors lower the fraction of correct and secure implementations by an average 3.4 percentage points versus standalone generation across three agents; secure neighbors improve it by 4.4 points, yielding a 7.8-point secure-versus-insecure neighbor gap.',
+      'Across five model-and-harness configurations on the paired C/C++ tasks, secure-context performance exceeds insecure-context performance by an average 35.4 percentage points. GPT-5.6 Sol drops from 91.0% to 42.0% under insecure context, a 49-point difference.',
+      'In follow-up analysis of vulnerable implementations, agents identify their own introduced vulnerability in 69.9% of cases on average, while 76.5% of explanations attribute the choice to similar code elsewhere. Style-following prompts amplify propagation; security reminders mitigate but do not eliminate it.'
+    ],
+    evidence: 'The paired-context intervention is stronger than comparing unrelated projects because target instructions, security oracles and modified code locations remain fixed. The backend suite contains 96 tasks with three generations per task and condition; the C/C++ suite has 20 task pairs with five generations per task and condition. The authors test GLM 5.3, Claude Opus 5 and GPT-5.6 Sol in both settings, plus Claude Opus 5.5 and GPT-6 Astra on C/C++. They use functionality/security tests and build-plus-exploit checks rather than relying solely on LLM judgments. Source materials are linked at https://github.com/eth-sri/vulnerability-propagation. All figures are author-reported, not independently replicated.',
+    limitations: 'The five configurations use different native harnesses (Claude Code 2.1.228 or Codex 0.147.0), reasoning settings (high, max or medium), and potentially different realized tool calls, tokens, latency and cost. Thus the within-configuration paired effect is more interpretable than cross-model ranking; no equal-cost claim is warranted. Only five C/C++ projects and 20 manually curated pairs were evaluated, with edits to analogous code constructed and validated by researchers. For C/C++, a successful build is used as the functionality check, which does not establish full functional correctness; a single vulnerability-specific PoC can miss other vulnerabilities. The follow-up explanation analysis is not a causal proof of the agents internal reasoning. This is not a longitudinal study of actual repository degradation over successive commits. Original arXiv v1 submitted November 8, 2026; no separate journal version is indicated.',
+    connections: ['Repository code is a potentially untrusted demonstration source; treat security-sensitive patterns as hypotheses to audit, not conventions to imitate blindly.', 'Add independent static analysis, exploit/regression tests and review of copied patterns after the final patch.', 'In coding-agent benchmarks, pair identical tasks across secure and insecure contexts to isolate context contamination from model ability.'],
+    verdict: 'Secure coding requires checking inherited patterns, not merely asking agents to follow local conventions.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

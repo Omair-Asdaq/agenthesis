@@ -638,6 +638,30 @@ export const papers: ResearchPaper[] = [
     connections: ['Repository code is a potentially untrusted demonstration source; treat security-sensitive patterns as hypotheses to audit, not conventions to imitate blindly.', 'Add independent static analysis, exploit/regression tests and review of copied patterns after the final patch.', 'In coding-agent benchmarks, pair identical tasks across secure and insecure contexts to isolate context contamination from model ability.'],
     verdict: 'Secure coding requires checking inherited patterns, not merely asking agents to follow local conventions.'
   },
+  {
+    slug: 'coding-agents-generalized-task-motion-planning',
+    title: 'Coding agents can compile physical reasoning into reusable programs.',
+    subtitle: 'A retrospective on generalized task-and-motion planning with simulator-driven program synthesis.',
+    category: 'Planning',
+    tags: ['Coding agents', 'Robotics', 'Program synthesis', 'Generalization'],
+    publishedOn: '2026-11-12', paperDate: '2026-09-24',
+    authors: 'Matteo Merler, Bowen Li, Josh Roy, Yichao Liang, Qianwei Wang, Yixuan Huang and Tom Silver',
+    source: 'https://arxiv.org/abs/2609.30233v1',
+    readMinutes: 11, level: 'Advanced', accent: 'mint',
+    question: 'Can a coding agent discover a reusable policy for physical task-and-motion planning, rather than asking a language model to reason through every new instance?',
+    intuition: 'A manipulation problem couples discrete choices about which object to move with continuous geometry, collision and dynamics constraints. A coding agent can use the simulator like an experimental scientist, testing hypotheses about physical behavior and compiling the resulting rules into an executable program. Once frozen, that program can act on unseen tasks without calling the model again.',
+    mechanism: 'AgenticGenPlan gives a coding agent a task description, object-centric states, simulator reset/step access and a bounded synthesis budget. The agent writes Python probes, discovers how actions work, revises a class with reset and get_action methods, and tests it on generated instances. In the main setting, source code and hand-engineered planning abstractions are hidden; the sandbox permits NumPy and SciPy but no network access. The final program is frozen before it is tested on held-out instances. A separate source-access setting allows agents to inspect and reuse simulator implementation details.',
+    reportedResults: [
+      'The study covers 28 simulated environments (25 KinDER and three PDDLStream), seven synthesis settings and five independent runs per setting: 980 generated programs evaluated on 100 held-out instances each, totaling 98,000 evaluation episodes.',
+      'Among the 16 environments with hand-engineered planners, the planner averaged 47% success, versus 82% for Claude Code with Opus 5, 95% for Codex with GPT-6 Astra and 56% for Codex with GPT-5.6 Sol. These values are specific to that 16-environment subset.',
+      'For 14 planner-available environments spanning different object counts, the authors report average computation per new instance of about 29 seconds for planners, 2.1 seconds for Opus-generated programs and 0.5 seconds for Astra-generated programs; these exclude synthesis time.',
+      'The source-access ablation improves mean success across all 28 environments for the stronger agents, but exposes simulator internals and helper routines that are deliberately inaccessible in the main setting.'
+    ],
+    evidence: 'The authors use a held-out evaluation protocol: each synthesized policy is frozen, then run on 100 unseen initial states per environment with a per-instance execution limit. Five independent synthesis runs expose variance. Comparators include hand-designed TAMP planners, one-shot generation and a reimplemented LLMGenPlan pipeline; the same Opus 5 model is used for the latter two baselines and the corresponding Claude Code agent, although tool access and interaction policies differ. They publish code, prompts and revision histories at https://github.com/agenticgentamp/agenticgentamp. All findings are author-reported, not independently replicated.',
+    limitations: 'This is simulated planning with full observability and object-centric states, not demonstrated robustness on physical robots with noisy sensors and actuation. Traditional planners were available in only 16 of 28 domains, so aggregate comparisons must not mix denominators. Tool-enabled coding agents can run custom experiments, whereas LLMGenPlan receives fixed feedback; the methods are not matched on tool autonomy or wall-clock synthesis effort. Post-synthesis runtime excludes the cost of model calls and experiments during development, so faster deployment does not imply lower total lifecycle cost. Some dynamic 3D tasks remain unsolved, and outcomes vary across runs. This is a retrospective selection: the arXiv preprint was first submitted September 24, 2026; the source shows v1 and no separate journal publication.',
+    connections: ['This is program synthesis as a form of amortized reasoning: spend computation once to produce a reusable policy for many later instances.', 'Simulator probes resemble active system identification and falsification-driven debugging.', 'Agent skill libraries can use the same pattern, but should keep evaluation seeds and acceptance checks isolated from the synthesis loop.'],
+    verdict: 'A compelling example of agentic experimentation becoming executable competence, with strong simulated evidence but important real-world and total-cost limitations.'
+  },
 ];
 export const latestPapers = [...papers].sort((a,b) => b.publishedOn.localeCompare(a.publishedOn));
 export const categories = [...new Set(papers.map(p => p.category))].sort();

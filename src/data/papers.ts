@@ -22,6 +22,29 @@ export type ResearchPaper = {
 };
 export const papers: ResearchPaper[] = [
   {
+    slug: 'wikitrace-evidence-linked-agent-memory',
+    title: 'An agent should be able to challenge its own memory.',
+    subtitle: 'WikiTrace links reusable lessons back to the executions that produced them, reducing the damage from misleading experience.',
+    category: 'Memory',
+    tags: ['Agent memory', 'Provenance', 'Evaluation', 'Tool use'],
+    publishedOn: '2026-11-13', paperDate: '2026-11-10',
+    authors: 'Yukyeong Lee, Yumin Choi, Jinheon Baek and Sung Ju Hwang',
+    source: 'https://arxiv.org/html/2611.14320v1',
+    readMinutes: 9, level: 'Advanced', accent: 'mint',
+    question: 'How can an agent reuse a lesson from a past task without blindly trusting a potentially incorrect interpretation of that task?',
+    intuition: 'A remembered rule is a compression of experience, not proof. An agent may have succeeded despite a bad action, or failed despite a good one. If the memory stores only a rule, the next agent cannot inspect the observations that justify it. WikiTrace treats memory as an evidence trail: concise advice for speed, with the original execution available when doubt arises.',
+    mechanism: 'Each offline training trajectory has a task, actions and observations, and a binary success label. A compiler creates a diagnosis and up to three concise insights per trajectory. The system retains a three-level chain: insight, explanatory compilation, and unmodified raw trajectory. At test time the agent sees the insights and three similar-run pointers; when guidance conflicts, comes from failure, lacks detail, or an action fails, it can inspect the linked read-only files with terminal tools. This is selective source checking, not a learned guarantee of truth. The memory is frozen before testing.',
+    reportedResults: [
+      'Author-reported mean score across eight suites in five benchmarks: WikiTrace 90.2, the identical-insights-without-evidence control 87.0, and no memory 79.5. The 3.2-point evidence-access contrast is more informative than the 10.7-point gain over no memory.',
+      'Memory-induced Regression, defined as turning previously solved tasks into failures, was 4.5% for WikiTrace versus 6.5% for Insights Only and 9.7% for a no-memory rerun reference. The authors separately report Gain and bootstrap confidence intervals.',
+      'A second backbone, GLM-5.3-flash, averaged 92.7 across three suites versus 90.9 for Insights Only. WikiTrace cost 1.17 times as much per test task as Insights Only in the main experiments.'
+    ],
+    evidence: 'The authors evaluate ALFWorld, ScienceWorld, PlanCraft, AppWorld, and tau3-bench Retail, totaling eight suites, with three trials per method. Methods share training trajectories, test tasks, a Pi terminal-agent harness and a DeepSeek-v4-flash backbone at high reasoning effort. Baselines include AWM, ExpeL and ReasoningBank adapted to the same offline protocol. The strongest controlled comparison gives the exact same extracted insights to both variants, but only WikiTrace receives the supporting files and descent instructions. The authors also test larger memory-build budgets for baseline methods and report task-level bootstrap intervals. Code: https://github.com/yukyeongleee/wikitrace . The arXiv v1 was submitted November 10, 2026; it was submitted to ACL Rolling Review, not established as an accepted journal or conference paper.',
+    limitations: 'The evidence-access ablation changes both available source files and prompting, so it does not isolate each component separately. Three trials cannot establish deployment-wide stability. The main experiment uses one backbone and the second covers only three suites. The 17% test-time cost premium excludes broader operational concerns and does not establish equal total lifecycle cost. All insights are inserted into the initial prompt, which will not scale to very large memories. A trajectory can itself be misleading or adversarial; provenance is not authentication. Some causal explanations and descent labels rely on LLM judges, whose labels are not independently verified causes. No independent replication is claimed.',
+    connections: ['This complements memory-poisoning work: keeping source traces makes an inference auditable but does not prove the source is trustworthy.', 'The relevant reliability metric is not only net accuracy; count how often a new memory breaks an already-solvable task.', 'For coding-agent skill libraries, preserve the test run, tool outputs, environment version and failure context behind each reusable skill.', 'Evidence descent is analogous to debugging from a summary back to a full execution trace, and should be triggered when confidence or applicability is in doubt.'],
+    verdict: 'The strongest lesson is architectural: memory should be revisable against its originating evidence, not merely retrieved as an authoritative instruction. The controlled ablation is persuasive, while scale, source trust and lifecycle cost remain open.'
+  },
+  {
     slug: 'delegation-is-not-free',
     title: 'When does an agent actually need another agent?',
     subtitle: 'The overlooked cost of delegation in tool-heavy workflows.',

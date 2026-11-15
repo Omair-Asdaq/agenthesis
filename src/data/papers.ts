@@ -22,6 +22,31 @@ export type ResearchPaper = {
 };
 export const papers: ResearchPaper[] = [
   {
+    slug: 'casebench-repository-context-code-security',
+    title: 'More repository context does not necessarily produce safer code.',
+    subtitle: 'CASE-Bench shows why coding agents need project-specific safeguards, not just more relevant-looking code.',
+    category: 'Security',
+    tags: ['Coding agents', 'Repository context', 'Security evaluation', 'Tool use'],
+    publishedOn: '2026-11-15', paperDate: '2026-11-04',
+    authors: 'Jiongchi Yu, Keke Lian, Junqing Wang, Zhikang Fan, Zhaoxuan Li, Yongheng Huang, Ziming Zhao and Dong Zhang',
+    source: 'https://arxiv.org/html/2611.06294v1',
+    readMinutes: 10, level: 'Advanced', accent: 'peach',
+    question: 'Why can a coding agent become more likely to produce working code after reading a repository, yet remain just as likely to introduce an exploitable vulnerability?',
+    intuition: 'Relevant context is not automatically safe context. A retrieved function can demonstrate how to call an API while silently omitting the authorization check that makes the call legitimate. Conversely, a project-specific security wrapper may be in another file that ordinary lexical or semantic retrieval never surfaces. The agent can therefore solve the visible feature request by imitating insecure precedent. A useful evaluation must distinguish code that compiles, code that passes functional tests, and code that resists a concrete exploit.',
+    mechanism: 'A.S.E 2.0 builds CASE-Bench from historical CVEs. Each of 145 masked-code tasks has a repository snapshot, localized edit region, functional tests, a replayable proof-of-concept exploit and expert annotations of relevant safeguards and insecure examples. A common pipeline supplies different retrieved contexts to six generator models. A generated patch is classified as unbuildable, incorrect, correct-but-exploitable, or secure. The authors compare functionality-oriented retrievers with security-oriented context, then directly remove safeguards or insert insecure exemplars. They separately instrument coding-agent tool traces to see which files agents actually observe and whether they use discovered safeguards.',
+    reportedResults: [
+      'Author-reported primary study: 145 tasks derived from 144 CVEs in 51 projects, six models, 13 context construction methods plus six controls, and 49,590 generated patches. The study also reports 1,305 coding-agent trajectories; these are distinct from the primary generation count.',
+      'Across functionality-oriented context methods, functional pass rate changes by -4.8 to +8.2 percentage points versus target-file-only, while secure pass rate changes by -1.1 to +3.7 points. No functionality-oriented method shows a Holm-significant secure-pass improvement over that baseline; the strongest observed secure gain is not a proven general benefit.',
+      'In controlled context edits, withholding an essential safeguard reduces secure pass rate by up to 8.1 percentage points, and inserting one insecure exemplar increases correct-but-exploitable code by 6.3 points. These are intervention-specific effects, not universal rates.',
+      'Agents observe the relevant safeguard in only 27-36% of trajectories, despite reading substantially more repository tokens than retrieval-only baselines. Observing and using a safeguard is associated with better security, but trace associations do not alone establish causality.'
+    ],
+    evidence: 'The authors first validate that vulnerable reference versions build and are exploitable while patched versions pass the same functional checks and resist each task-specific exploit. Independent security reviewers annotate tasks, and evaluation reruns each candidate in a fresh Docker environment. Six generator LLMs share a prompt skeleton and three samples per task; retrieval is capped at 8K tokens beyond the masked target file for most methods, but actual token use, model costs and generated context lengths are not identical. Their 18 planned statistical comparisons use Holm correction and project-clustered uncertainty because six projects account for 67 tasks. They separately vary retrieval budgets, conduct single-context-element interventions and inspect SWE-agent and Claude Code trajectories under bounded steps and cost. Source: https://arxiv.org/html/2611.06294v1 . The arXiv original submission was November 4, 2026 (v1); no independently verified accepted journal publication is claimed.',
+    limitations: 'Exploit failure means the specified proof of concept did not succeed; it is not a proof that the generated code has no other vulnerabilities. Functional correctness is relative to a small set of task-specific tests. Historical CVE code may appear in training data, and 51 projects are unevenly represented; the authors run near-copy and recent-CVE sensitivity analyses but cannot eliminate contamination. Retrieval policies are reimplemented in one pipeline rather than reproducing entire original tools. Common retrieval caps do not equalize actual token counts or money, and native agents have different affordances and costs. Some context comparisons are observational, whereas the single-element interventions offer stronger causal evidence. The 1,305 trajectories are bounded sandbox studies, not longitudinal production evidence.',
+    connections: ['Complements the repository-vulnerability-propagation study: vulnerable examples affect generation even without an explicit request to copy insecurity.', 'Explains why coding-agent context builders should rank access-control rules, validation wrappers and dataflow safeguards alongside functional examples.', 'Suggests an engineering evaluation: report functional success and exploit-based security success on the same patch, under recorded model, tool and cost budgets.'],
+    verdict: 'A strong, unusually operational study of the context-security trade-off: more repository knowledge helps only when the agent sees and correctly applies the relevant security rules.'
+  },
+
+  {
     slug: 'wikitrace-evidence-linked-agent-memory',
     title: 'An agent should be able to challenge its own memory.',
     subtitle: 'WikiTrace links reusable lessons back to the executions that produced them, reducing the damage from misleading experience.',

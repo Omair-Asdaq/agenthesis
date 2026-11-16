@@ -22,6 +22,31 @@ export type ResearchPaper = {
 };
 export const papers: ResearchPaper[] = [
   {
+    slug: 'microperf-agents-distributed-performance',
+    title: 'Working code is not the same as a faster system.',
+    subtitle: 'MicroPerf-Bench tests whether coding agents can locate and remove runtime bottlenecks across microservices.',
+    category: 'Evaluation',
+    tags: ['Coding agents', 'Distributed systems', 'Performance', 'Benchmarks'],
+    publishedOn: '2026-11-16', paperDate: '2026-10-21',
+    authors: 'Yanze Zhang, Maggie Yongqi Guan, Shudong Liu, Qi Hao, Kanye Ye Wang, Meng Qu and Xiaobo Zhou',
+    source: 'https://arxiv.org/html/2610.29695v1',
+    readMinutes: 11, level: 'Advanced', accent: 'mint',
+    question: 'Can an agent repair code that passes every functional test yet makes a deployed microservice application no faster?',
+    intuition: 'A slow request can cross several services, databases, locks and network boundaries. An agent may correctly remove inefficient-looking code but miss the dominant bottleneck: for example, a global mutex serializing concurrent database requests. Local code quality and end-to-end latency are different objectives. An optimization should be judged after redeploying the complete service graph under a controlled workload, not by whether a plausible patch compiles.',
+    mechanism: 'MicroPerf-Bench starts with seven real open-source microservice systems and injects controlled performance anti-patterns, including chatty RPCs, service chains and shared persistence. Each of 65 tasks provides the degraded multi-service source, Docker deployment configuration, workload and restrictions against increasing resources or disabling security, tracing and transaction safeguards. The agent edits the system; the evaluator rebuilds and redeploys containers, checks functionality and fairness, warms the system, then measures mixed-workload latency. The score is clamped between zero and 100 according to how much latency degradation is recovered relative to a clean reference. Zero also covers invalid, noncompliant or non-improving patches. Nine combinations of three agent harnesses and three models each run three times. A separate pilot adds a limited profiling tool to one configuration.',
+    reportedResults: [
+      'Author-reported benchmark: 65 tasks across seven applications and nine selected anti-pattern categories, although ESB misuse has zero instantiated cases. Three scaffolds (OpenCode, OpenHands and Claude Code) crossed with GLM-5.2, Qwen3.7-Max and DeepSeek-V4-Pro produce 1,755 independent runs.',
+      'The strongest baseline, OpenHands with GLM, averages 42.0/100 normalized recovered degradation. Across nine configurations, scores range from 23.4 to 42.0 and the mean positive-score rate is 44.0%; a score is not the fraction of tasks solved.',
+      'Among zero-score trials, the largest failure category is no measurable performance gain (48.7%), despite many patches being functionally valid. The study thus separates editing capability from correct bottleneck localization.',
+      'In a preliminary single-run profiling augmentation, Claude Code with Qwen scores 47.7 versus its three-run baseline mean of 39.4; the positive-score rate rises from 45.6% to 58.5%. Extra measurement cycles and an unequal number of runs prevent a clean equal-cost causal comparison.'
+    ],
+    evidence: 'The authors report auditing more than 10,000 real commits before selecting controlled injections, cleaning 15 native defects from the seven reference systems and validating candidate injected tasks with three engineers. Each task must preserve APIs and demonstrate at least 20% latency degradation for single-pattern injections. The evaluation uses fresh containers, a 90-second warm-up and three latency measurements. All nine agent-model configurations receive the same specification, a two-hour session budget and 20-minute per-command timeout, with temperature 1.0 and reasoning enabled; however, harnesses use different tools and consume unequal tokens and time. Mean sessions last 7.7-18.0 minutes; billing-equivalent tokens range from 0.35M to 1.69M per task. The authors release code, tasks, scores and failure labels at https://github.com/zyzcjnb/microperf . Primary source https://arxiv.org/html/2610.29695v1 . Original arXiv v1 was submitted October 21, 2026; this is a retrospective selection published November 16, not a new paper revision or a verified journal acceptance.',
+    limitations: 'These are engineered injections of documented anti-patterns, not a random sample of naturally occurring production incidents. Seven host systems and heavily uneven pattern coverage limit external validity; one of nine categories has no instances. The clean reference itself required human repair, and the score depends on its workload and latency measurements. Three runs expose substantial stochasticity but do not eliminate measurement variance. Tool affordances and actual tokens differ across agent harnesses, despite a common time limit and gateway. The profiling pilot has one run and additional instrumentation, so its gain cannot be attributed to profiling under matched compute. The reported benchmark is publicly released but was not independently replicated for this article.',
+    connections: ['Extends coding-agent evaluation beyond patch correctness and repository-level speed to end-to-end distributed behavior.', 'Complements research on harness-model pairing: the best model depends on the harness and workload, not merely model capability.', 'Suggests an agent workflow: measure a baseline, hypothesize a cross-service bottleneck, instrument and compare under load, then accept only verified improvements with functional and safety gates.'],
+    verdict: 'An instructive retrospective study showing that optimization agents need measured system evidence and deployment-level acceptance tests, not just plausible code edits.'
+  },
+
+  {
     slug: 'trace2eval-real-workflow-coding-agent-evaluation',
     title: 'Can a coding benchmark reconstruct what users actually asked for?',
     subtitle: 'Trace2Eval turns anonymized coding-agent histories into recoverable tasks and human-calibrated artifact-quality judgments.',

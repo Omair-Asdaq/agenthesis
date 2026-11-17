@@ -22,6 +22,31 @@ export type ResearchPaper = {
 };
 export const papers: ResearchPaper[] = [
   {
+    slug: 'lead-rl-credit-assignment-agent-research',
+    title: 'A useful subagent should not be punished for its team\'s failure.',
+    subtitle: 'LEAD-RL trains research agents to distinguish useful evidence from misleading delegation reports, improving answer quality without rewarding extra steps.',
+    category: 'Multi-Agent Systems',
+    tags: ['Multi-agent coordination', 'Reinforcement learning', 'Credit assignment', 'Deep research'],
+    publishedOn: '2026-11-17', paperDate: '2026-11-12',
+    authors: 'Yuyang Wu, Yang Liu, Zequn Xie, Junjie Wang, Dan Yang, Zehao Tan, Ding-Chu Zhang, Junming Yang, Yue Shen, Jian Wang and Jinjie Gu',
+    source: 'https://arxiv.org/html/2611.17041v1',
+    readMinutes: 11, level: 'Advanced', accent: 'blue',
+    question: 'If a research team gets the final answer wrong, should every subagent that supplied evidence receive a negative learning signal?',
+    intuition: 'A subagent can retrieve a decisive citation while the main agent still reasons incorrectly. Conversely, a subagent can invent an appealing explanation while the team succeeds for unrelated reasons. Broadcasting one final-answer reward to all workers reinforces or punishes both indiscriminately. Delegation is also active context management: each worker explores a bounded evidence trail and returns a compact report, allowing the main agent to reason without ingesting every tool trace.',
+    mechanism: 'LEAD-RL jointly updates a shared policy acting in main-agent and subagent roles. For each question, it samples four complete multi-agent rollouts, judges final-answer correctness, and computes a group-relative team advantage. A separate training-time rubric judge labels each subagent report helpful, harmful or neutral using the question, reference answer, delegated brief, report and that worker\'s actual search evidence. Helpful reports receive positive but not negative team advantage; harmful reports receive negative but not positive advantage; neutral reports keep ordinary team credit. Low-confidence labels become neutral. The rubric never adds a reward for speed, token savings or process steps, and neither judge nor reference answers are exposed to inference-time agents.',
+    reportedResults: [
+      'Author-reported matched BrowseComp training comparison: LEAD-RL reaches 73.49% accuracy versus 71.00% for joint RL with shared team credit and 72.50% for the SFT starting point. Its critical-path cost is 244.22 steps per question versus 323.30 for shared-credit RL, a 24.5% reduction.',
+      'The rubric judge labels 31.52% of LEAD-RL subagent reports helpful and 9.87% harmful, compared with 21.15% and 13.84% under shared-credit RL. These are judge assessments, not independent human annotations.',
+      'On matched BrowseComp swarm-on/off runs with Ling-3-Flash, trained LEAD-RL scores 73.5% with swarm and 66.5% without; the untrained base scores 58.0% with swarm and 59.0% without. Swarm-enabled token use changes from 330.7k per question for the base to 336.9k for LEAD-RL, so the quality improvement is not a token-saving result.',
+      'The authors report results on BrowseComp, BrowseComp-ZH, GAIA, tool-augmented Humanity\'s Last Exam and DeepSearchQA across Ling-3-Flash and Qwen3.6-35B-A3B. The paper also reports a 6.78-point validation accuracy gain during training at roughly constant critical-path cost.'
+    ],
+    evidence: 'The controlled RL variants share an SFT checkpoint, training data, validation selection, swarm harness, question split, decoding settings and execution budget. The compared variants are main-only RL, joint RL with shared team advantage, and contribution-gated joint RL. Training uses sample-level GSPO with four rollouts per question, up to sixteen subagents per main rollout, and a separate DeepSeek V4 Pro judge for outcome and report utility. The study records total main-plus-subagent tokens, critical-path steps and an idealized parallelism ratio; the latter is not measured wall-clock speedup. The strongest evidence is the within-harness training ablation, not the table combining external systems with differing evaluation protocols. Original arXiv v1 submitted November 12, 2026: https://arxiv.org/abs/2611.17041 . No separate accepted journal publication is asserted. All figures are author-reported, not independently replicated.',
+    limitations: 'The contribution judge sees reference answers during training and can misclassify evidence, especially under truncation or incomplete tool logs. Its reported confidence is a filtering heuristic rather than a calibrated probability; there is no demonstrated human-grounded causal attribution of each report. Different external model comparisons mix harnesses and scoring protocols, so they cannot establish model superiority under equal costs. Critical-path steps ignore real tool latency, contention and communication overhead; idealized speedup is not actual elapsed-time acceleration. Training the extra judge adds cost not reflected in inference-only comparisons. The appendix shows unequal total update counts across training variants and late-stage critical-path growth, making checkpoint selection and training budget important caveats. Generalization beyond research-style question answering remains untested.',
+    connections: ['Extends the delegation-cost question: coordination quality depends on credit assignment, not simply how many workers are launched.', 'Suggests that multi-agent orchestration should preserve provenance for each delegated report and distinguish evidence quality from the final verdict.', 'A practical benchmark should report task accuracy, total tokens, actual wall-clock latency and per-worker evidence utility separately, with matched harness and model budgets.'],
+    verdict: 'A useful controlled study of multi-agent credit assignment: selectively gating team rewards improves research accuracy and modeled execution depth, but its judge dependence and idealized efficiency measures limit deployment claims.'
+  },
+
+  {
     slug: 'microperf-agents-distributed-performance',
     title: 'Working code is not the same as a faster system.',
     subtitle: 'MicroPerf-Bench tests whether coding agents can locate and remove runtime bottlenecks across microservices.',
